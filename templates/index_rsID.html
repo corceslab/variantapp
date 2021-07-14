@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>APPLET-MVP</title>
+  <link rel="stylesheet" href="../static/css/style.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>
+      <center>Predicting Impact of Variants on TF Binding</center>
+    </h1>
+
+    {% block content %}
+    {% for message in form.cell_type.errors %}
+    <div class="flash">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in form.chromosome.errors %}
+    <div class="flash">{{ message }}</div>
+    {% endfor %}
+    
+    {% for message in form.position.errors %}
+    <div class="flash">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in form.allele1.errors %}
+    <div class="flash">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in form.allele2.errors %}
+    <div class="flash">{{ message }}</div>
+    {% endfor %}
+
+
+    <form method=post>
+
+      {{ form.cell_type.label }}
+      {{ form.cell_type }}
+
+      {{ form.rsID.label }}
+      {{ form.rsID }}
+      
+      <br>
+      {{ form.submit }}
+
+    </form>
+    {% endblock %}
+
+  </div>
+</body>
+
+</html>
