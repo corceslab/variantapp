@@ -1,4 +1,4 @@
 .DS_Store
 *.fa
 *.pyc
-ATAC/data/Cluster24.bpnet.unstranded.bw
+data/tracks/C24_track.bw

@@ -1,9 +1,0 @@
-INFO:2021-07-09 00:25:13,120:[shap_scores.py:370 -    shap_scores_main() ] Loading /wynton/home/corces/allan/variantapp/ATAC/model/bpnet.256.15.001_split000.h5
-INFO:2021-07-09 00:25:22,595:[utils.py:145 -   _init_num_threads() ] Note: NumExpr detected 32 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
-INFO:2021-07-09 00:25:22,601:[shap_scores.py:118 -         shap_scores() ] #Peaks - 1
-INFO:2021-07-09 00:25:22,602:[shap_scores.py:121 -         shap_scores() ] Opening reference file ...
-INFO:2021-07-09 00:25:22,610:[shap_scores.py:137 -         shap_scores() ] Opening control bigWigs ...
-INFO:2021-07-09 00:25:24,580:[shap_scores.py:274 -         shap_scores() ] Generating 'counts' shap scores
-INFO:2021-07-09 00:25:37,146:[shap_scores.py:279 -         shap_scores() ] Saving 'counts' scores
-INFO:2021-07-09 00:25:37,174:[shap_scores.py:286 -         shap_scores() ] Generating 'profile' shap scores
-INFO:2021-07-09 00:25:38,807:[shap_scores.py:291 -         shap_scores() ] Saving 'profile' scores

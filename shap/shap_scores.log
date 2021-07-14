@@ -1,0 +1,49 @@
+INFO:2021-07-09 00:25:13,120:[shap_scores.py:370 -    shap_scores_main() ] Loading /wynton/home/corces/allan/variantapp/ATAC/model/bpnet.256.15.001_split000.h5
+INFO:2021-07-09 00:25:22,595:[utils.py:145 -   _init_num_threads() ] Note: NumExpr detected 32 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+INFO:2021-07-09 00:25:22,601:[shap_scores.py:118 -         shap_scores() ] #Peaks - 1
+INFO:2021-07-09 00:25:22,602:[shap_scores.py:121 -         shap_scores() ] Opening reference file ...
+INFO:2021-07-09 00:25:22,610:[shap_scores.py:137 -         shap_scores() ] Opening control bigWigs ...
+INFO:2021-07-09 00:25:24,580:[shap_scores.py:274 -         shap_scores() ] Generating 'counts' shap scores
+INFO:2021-07-09 00:25:37,146:[shap_scores.py:279 -         shap_scores() ] Saving 'counts' scores
+INFO:2021-07-09 00:25:37,174:[shap_scores.py:286 -         shap_scores() ] Generating 'profile' shap scores
+INFO:2021-07-09 00:25:38,807:[shap_scores.py:291 -         shap_scores() ] Saving 'profile' scores
+INFO:2021-07-13 18:08:53,449:[variant_shap_scores.py:383 -    shap_scores_main() ] Loading /wynton/home/corces/allan/variantapp/models/bpnet-hintv1/model.h5
+DEBUG:2021-07-13 18:08:53,529:[attrs.py:77 -         __getitem__() ] Creating converter from 3 to 5
+INFO:2021-07-13 18:08:56,171:[utils.py:145 -   _init_num_threads() ] Note: NumExpr detected 32 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+INFO:2021-07-13 18:08:56,179:[variant_shap_scores.py:126 -         shap_scores() ] #Peaks - 2
+INFO:2021-07-13 18:08:56,180:[variant_shap_scores.py:129 -         shap_scores() ] Opening reference file ...
+INFO:2021-07-13 18:09:01,806:[variant_shap_scores.py:287 -         shap_scores() ] Generating 'counts' shap scores
+INFO:2021-07-13 18:09:12,059:[variant_shap_scores.py:292 -         shap_scores() ] Saving 'counts' scores
+DEBUG:2021-07-13 18:09:12,141:[dataset.py:945 -         __setitem__() ] Creating converter from 5 to 3
+INFO:2021-07-13 18:09:12,157:[variant_shap_scores.py:299 -         shap_scores() ] Generating 'profile' shap scores
+INFO:2021-07-13 18:09:23,737:[variant_shap_scores.py:304 -         shap_scores() ] Saving 'profile' scores
+INFO:2021-07-13 18:11:31,206:[variant_shap_scores.py:383 -    shap_scores_main() ] Loading /wynton/home/corces/allan/variantapp/models/bpnet-hintv1/model.h5
+DEBUG:2021-07-13 18:11:31,235:[attrs.py:77 -         __getitem__() ] Creating converter from 3 to 5
+INFO:2021-07-13 18:11:34,330:[utils.py:145 -   _init_num_threads() ] Note: NumExpr detected 32 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+INFO:2021-07-13 18:11:34,337:[variant_shap_scores.py:126 -         shap_scores() ] #Peaks - 2
+INFO:2021-07-13 18:11:34,338:[variant_shap_scores.py:129 -         shap_scores() ] Opening reference file ...
+INFO:2021-07-13 18:11:43,395:[variant_shap_scores.py:287 -         shap_scores() ] Generating 'counts' shap scores
+INFO:2021-07-13 18:11:53,552:[variant_shap_scores.py:292 -         shap_scores() ] Saving 'counts' scores
+DEBUG:2021-07-13 18:11:53,560:[dataset.py:945 -         __setitem__() ] Creating converter from 5 to 3
+INFO:2021-07-13 18:11:53,572:[variant_shap_scores.py:299 -         shap_scores() ] Generating 'profile' shap scores
+INFO:2021-07-13 18:12:05,204:[variant_shap_scores.py:304 -         shap_scores() ] Saving 'profile' scores
+INFO:2021-07-13 19:48:11,289:[variant_shap_scores.py:383 -    shap_scores_main() ] Loading /wynton/home/corces/allan/variantapp/models/bpnet-hintv1/model.h5
+DEBUG:2021-07-13 19:48:11,319:[attrs.py:77 -         __getitem__() ] Creating converter from 3 to 5
+INFO:2021-07-13 19:48:13,517:[utils.py:145 -   _init_num_threads() ] Note: NumExpr detected 32 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+INFO:2021-07-13 19:48:13,523:[variant_shap_scores.py:126 -         shap_scores() ] #Peaks - 2
+INFO:2021-07-13 19:48:13,523:[variant_shap_scores.py:129 -         shap_scores() ] Opening reference file ...
+INFO:2021-07-13 19:48:19,594:[variant_shap_scores.py:287 -         shap_scores() ] Generating 'counts' shap scores
+INFO:2021-07-13 19:48:28,996:[variant_shap_scores.py:292 -         shap_scores() ] Saving 'counts' scores
+DEBUG:2021-07-13 19:48:29,005:[dataset.py:945 -         __setitem__() ] Creating converter from 5 to 3
+INFO:2021-07-13 19:48:29,020:[variant_shap_scores.py:299 -         shap_scores() ] Generating 'profile' shap scores
+INFO:2021-07-13 19:48:40,032:[variant_shap_scores.py:304 -         shap_scores() ] Saving 'profile' scores
+INFO:2021-07-13 19:52:37,846:[variant_shap_scores.py:383 -    shap_scores_main() ] Loading /wynton/home/corces/allan/variantapp/models/bpnet-hintv1/model.h5
+DEBUG:2021-07-13 19:52:37,874:[attrs.py:77 -         __getitem__() ] Creating converter from 3 to 5
+INFO:2021-07-13 19:52:40,049:[utils.py:145 -   _init_num_threads() ] Note: NumExpr detected 32 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+INFO:2021-07-13 19:52:40,056:[variant_shap_scores.py:126 -         shap_scores() ] #Peaks - 2
+INFO:2021-07-13 19:52:40,056:[variant_shap_scores.py:129 -         shap_scores() ] Opening reference file ...
+INFO:2021-07-13 19:52:50,215:[variant_shap_scores.py:287 -         shap_scores() ] Generating 'counts' shap scores
+INFO:2021-07-13 19:52:59,183:[variant_shap_scores.py:292 -         shap_scores() ] Saving 'counts' scores
+DEBUG:2021-07-13 19:52:59,332:[dataset.py:945 -         __setitem__() ] Creating converter from 5 to 3
+INFO:2021-07-13 19:52:59,348:[variant_shap_scores.py:299 -         shap_scores() ] Generating 'profile' shap scores
+INFO:2021-07-13 19:53:11,136:[variant_shap_scores.py:304 -         shap_scores() ] Saving 'profile' scores

@@ -6,28 +6,32 @@
 #$ -l mem_free=10G
 #$ -l h_rt=24:00:00
 
-BASE_DIR=/wynton/home/corces/allan/variantapp/ATAC
+BASE_DIR=/wynton/home/corces/allan/variantapp
 REFERENCE_DIR=/wynton/home/corces/allan/variantapp/reference
 
+PREDICTIONS_DIR=$BASE_DIR/predictions
+SHAP_DIR=$BASE_DIR/shap
 DATA_DIR=$BASE_DIR/data
-MODEL_DIR=$BASE_DIR/model
+MODEL_DIR=$BASE_DIR/models
 
 INPUT_DATA=$DATA_DIR/input_data.json
-PEAKS_F=$DATA_DIR/Cluster24.peaks.bed
+CV_SPLITS=$DATA_DIR/splits.json
 
-PREDICTIONS_DIR=$BASE_DIR/predictions
-mkdir -p $PREDICTIONS_DIR
+INPUT_BW=$DATA_DIR/tracks/C24_track.bw
+# PEAKS_F=$DATA_DIR/peaks/C24_peaks.bed
+PEAKS_F=$DATA_DIR/peaks/app.bed
 
 CHROM_SIZES=$REFERENCE_DIR/hg38.chrom.sizes
 REFERENCE_GENOME=$REFERENCE_DIR/hg38.genome.fa
+
+mkdir -p $PREDICTIONS_DIR
 
 INPUT_SEQ_LEN=2114
 OUTPUT_LEN=1000
 
 predict \
-    --model $MODEL_DIR/bpnet.256.15.001_split000.h5 \
+    --model $MODEL_DIR/bpnet-hintv1/model.h5 \
     --chrom-sizes $CHROM_SIZES \
-    --chroms chr1 \
     --reference-genome $REFERENCE_GENOME \
     --exponentiate-counts \
     --output-dir $PREDICTIONS_DIR \
