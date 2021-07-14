@@ -43,10 +43,10 @@ def gen_delta(counts_hdf5, profile_hdf5, startpos, trim_start, trim_end, chrom):
     s = "Bases on " + chrom.decode("utf-8")
     plt.xlabel(s)
     plt.ylabel("Scores (A=green/C=blue/G=yellow/T=red")
-    plt.bar(ind, csA1-csA2, color = '#4D7F1E')
-    plt.bar(ind, csC1-csC2, color = '#1A17E1')
-    plt.bar(ind, csG1-csG2, color = '#D69824')
-    plt.bar(ind, csT1-csT2, color = '#D40603')
+    plt.bar(ind, csA2-csA1, color = '#4D7F1E')
+    plt.bar(ind, csC2-csC1, color = '#1A17E1')
+    plt.bar(ind, csG2-csG1, color = '#D69824')
+    plt.bar(ind, csT2-csT1, color = '#D40603')
     plt.savefig('../static/images/'+ chrom.decode("utf-8") + "_" + str(startpos) + 'DeltaGraph.png')
 
 def vis_shap(counts_hdf5, profile_hdf5, entry):

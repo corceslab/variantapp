@@ -1,5 +1,5 @@
 {"task0": {"strand": 0,
     "task_id": 0,
-    "signal": "/wynton/home/corces/allan/variantapp/data/C24_track.bw",
-    "peaks": "/wynton/home/corces/allan/variantapp/data/app.bed"}
+    "signal": "/wynton/home/corces/allan/variantapp/data/tracks/C24_track.bw",
+    "peaks": "/wynton/home/corces/allan/variantapp/data/peaks/app.bed"}
 }

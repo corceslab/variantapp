@@ -47,3 +47,23 @@ INFO:2021-07-13 19:52:59,183:[variant_shap_scores.py:292 -         shap_scores()
 DEBUG:2021-07-13 19:52:59,332:[dataset.py:945 -         __setitem__() ] Creating converter from 5 to 3
 INFO:2021-07-13 19:52:59,348:[variant_shap_scores.py:299 -         shap_scores() ] Generating 'profile' shap scores
 INFO:2021-07-13 19:53:11,136:[variant_shap_scores.py:304 -         shap_scores() ] Saving 'profile' scores
+INFO:2021-07-14 13:10:48,136:[variant_shap_scores.py:383 -    shap_scores_main() ] Loading /wynton/home/corces/allan/variantapp/models/bpnet-hintv1/model.h5
+DEBUG:2021-07-14 13:10:48,180:[attrs.py:77 -         __getitem__() ] Creating converter from 3 to 5
+INFO:2021-07-14 13:10:50,725:[utils.py:145 -   _init_num_threads() ] Note: NumExpr detected 32 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+INFO:2021-07-14 13:10:50,733:[variant_shap_scores.py:126 -         shap_scores() ] #Peaks - 2
+INFO:2021-07-14 13:10:50,734:[variant_shap_scores.py:129 -         shap_scores() ] Opening reference file ...
+INFO:2021-07-14 13:10:59,079:[variant_shap_scores.py:287 -         shap_scores() ] Generating 'counts' shap scores
+INFO:2021-07-14 13:11:09,580:[variant_shap_scores.py:292 -         shap_scores() ] Saving 'counts' scores
+DEBUG:2021-07-14 13:11:09,594:[dataset.py:945 -         __setitem__() ] Creating converter from 5 to 3
+INFO:2021-07-14 13:11:09,612:[variant_shap_scores.py:299 -         shap_scores() ] Generating 'profile' shap scores
+INFO:2021-07-14 13:11:21,145:[variant_shap_scores.py:304 -         shap_scores() ] Saving 'profile' scores
+INFO:2021-07-14 13:14:14,377:[variant_shap_scores.py:383 -    shap_scores_main() ] Loading /wynton/home/corces/allan/variantapp/models/bpnet-hintv1/model.h5
+DEBUG:2021-07-14 13:14:14,400:[attrs.py:77 -         __getitem__() ] Creating converter from 3 to 5
+INFO:2021-07-14 13:14:16,629:[utils.py:145 -   _init_num_threads() ] Note: NumExpr detected 32 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+INFO:2021-07-14 13:14:16,636:[variant_shap_scores.py:126 -         shap_scores() ] #Peaks - 2
+INFO:2021-07-14 13:14:16,637:[variant_shap_scores.py:129 -         shap_scores() ] Opening reference file ...
+INFO:2021-07-14 13:14:22,656:[variant_shap_scores.py:287 -         shap_scores() ] Generating 'counts' shap scores
+INFO:2021-07-14 13:14:32,671:[variant_shap_scores.py:292 -         shap_scores() ] Saving 'counts' scores
+DEBUG:2021-07-14 13:14:32,685:[dataset.py:945 -         __setitem__() ] Creating converter from 5 to 3
+INFO:2021-07-14 13:14:32,699:[variant_shap_scores.py:299 -         shap_scores() ] Generating 'profile' shap scores
+INFO:2021-07-14 13:14:44,298:[variant_shap_scores.py:304 -         shap_scores() ] Saving 'profile' scores
