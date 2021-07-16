@@ -14,9 +14,9 @@ def insert_variant(seq, allele, position):
     left, right = seq[:position-1], seq[position:]
     return left + allele + right
 
-def load_sequences():
+def load_sequences(bedfile):
     fasta_ref = pysam.FastaFile('../reference/hg38.genome.fa')
-    peaks_df = pd.read_csv('../data/peaks/app.bed', sep='\t', header=None, 
+    peaks_df = pd.read_csv(bedfile, sep='\t', header=None, 
                             names=['chrom', 'st', 'allele', 'summit', 'signalValue'])
     peaks_df['start'] = peaks_df['st'] + peaks_df['summit'] - (2114 // 2)
     peaks_df['end'] = peaks_df['st'] + peaks_df['summit'] + (2114 // 2)
@@ -65,8 +65,8 @@ def gen_graphs(pred, filepath):
     plt.plot(pred[300:700])
     plt.savefig(filepath)
 
-def predict_main():
-    sequences = load_sequences()
+def predict_main(bedfile):
+    sequences = load_sequences(bedfile)
     batch1, batch2 = make_batches(sequences)
     with CustomObjectScope({'MultichannelMultinomialNLL': MultichannelMultinomialNLL}):
         model = load_model('../models/bpnetv1/model.h5')
@@ -78,4 +78,4 @@ def predict_main():
     gen_graphs(prediction2, '../static/images/app/effectpred.png')
 
 if __name__ == '__main__':
-    predict_main()
+    predict_main('../data/peaks/app.bed')
