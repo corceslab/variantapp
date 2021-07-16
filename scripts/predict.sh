@@ -52,5 +52,4 @@ logits2profile \
         --output-directory $PREDICTIONS_DIR \
         --output-filename predicted_profile \
         --peaks $PEAKS_F \
-        --chroms chr1 \
         --chrom-sizes $CHROM_SIZES
