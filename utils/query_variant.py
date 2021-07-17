@@ -22,7 +22,7 @@ def query_rsID(rsID):
     var_df = add_variant(var_df, chrom, position, noneffect_allele)
     var_df['summit'] = 0
     var_df['signalValue'] = 10
-    var_df.to_csv('../data/peaks/app.bed', \
+    var_df.to_csv('data/peaks/app.bed', \
          sep='\t', encoding='utf-8', header=False, index=False)
 
 def query_values(chrom, position, effect_allele, noneffect_allele):
@@ -31,7 +31,7 @@ def query_values(chrom, position, effect_allele, noneffect_allele):
     var_df = add_variant(var_df, chrom, position, noneffect_allele)
     var_df['summit'] = 0
     var_df['signalValue'] = 10
-    var_df.to_csv('../data/peaks/app.bed', \
+    var_df.to_csv('data/peaks/app.bed', \
          sep='\t', encoding='utf-8', header=False, index=False)
     
 

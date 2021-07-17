@@ -171,6 +171,12 @@ form textarea#message {
   background-image: -o-linear-gradient(top, #dbdbdb, #cccccc);
   background-image: linear-gradient(top, #dbdbdb, #cccccc);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#dbdbdb, endColorstr=#cccccc);
 }  */
+img {
+  width: 1000px;
+  height: auto;
+  align-content: center;
+  margin-left: 0;
+}
 
 /* Message flashing */
 .flash {

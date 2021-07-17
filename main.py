@@ -2,7 +2,7 @@ from types import ModuleType
 from flask import Flask, request
 from flask import render_template
 from utils.form import form_values, form_rsID
-from utils.utils import generate_output_values
+from utils.utils import generate_output_values, generate_output_rsID
 from keras.models import load_model
 import tensorflow as tf
 from tensorflow import compat
@@ -30,8 +30,8 @@ def home():
     if request.method == 'POST' and form.validate():
         cell_type = request.form['cell_type']
         rsID = request.form['rsID']
-        generate_output_values(cell_type, rsID)
+        generate_output_rsID(cell_type, rsID)
         return render_template('output.html')
-    return render_template('index_values.html', form=form)
+    return render_template('index_rsID.html', form=form)
 
 app.run(host='0.0.0.0', port=50000)

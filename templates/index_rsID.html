@@ -17,19 +17,7 @@
     <div class="flash">{{ message }}</div>
     {% endfor %}
 
-    {% for message in form.chromosome.errors %}
-    <div class="flash">{{ message }}</div>
-    {% endfor %}
-    
-    {% for message in form.position.errors %}
-    <div class="flash">{{ message }}</div>
-    {% endfor %}
-
-    {% for message in form.allele1.errors %}
-    <div class="flash">{{ message }}</div>
-    {% endfor %}
-
-    {% for message in form.allele2.errors %}
+    {% for message in form.rsID.errors %}
     <div class="flash">{{ message }}</div>
     {% endfor %}
 
