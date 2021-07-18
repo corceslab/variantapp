@@ -14,12 +14,8 @@ def insert_variant(seq, allele, position):
     left, right = seq[:position-1], seq[position:]
     return left + allele + right
 
-def load_sequences(bedfile):
-    fasta_ref = pysam.FastaFile('reference/hg38.genome.fa')
-    peaks_df = pd.read_csv(bedfile, sep='\t', header=None, 
-                            names=['chrom', 'st', 'allele', 'summit', 'signalValue'])
-    peaks_df['start'] = peaks_df['st'] + peaks_df['summit'] - (2114 // 2)
-    peaks_df['end'] = peaks_df['st'] + peaks_df['summit'] + (2114 // 2)
+def load_sequences(peaks_df):
+    fasta_ref = pysam.FastaFile('../reference/hg38.genome.fa') #don't forget to remove ..
     sequences = []
     for idx, row in peaks_df.iterrows():
         start = row['start']
@@ -65,15 +61,15 @@ def gen_graphs(pred, filepath):
     plt.plot(pred[300:700])
     plt.savefig(filepath)
 
-def predict_main(bedfile, model):
-    sequences = load_sequences(bedfile)
+def predict_main(model, peaks_df):
+    sequences = load_sequences(peaks_df)
     batch1, batch2 = make_batches(sequences)
     preds1 = model.predict(batch1)
     preds2 = model.predict(batch2)
     prediction1 = postprocess(preds1)
     prediction2 = postprocess(preds2)
-    gen_graphs(prediction1, 'static/images/app/noneffectpred.png')
-    gen_graphs(prediction2, 'static/images/app/effectpred.png')
+    gen_graphs(prediction1, '../static/images/app/noneffectpred.png') #..
+    gen_graphs(prediction2, '../static/images/app/effectpred.png') #..
 
 if __name__ == '__main__':
     predict_main('../data/peaks/app.bed')

@@ -7,18 +7,14 @@ import pysam
 import shap
 import tensorflow as tf
 import tensorflow_probability as tfp
+from modisco.visualization import viz_sequence
 
-from basepairmodels.cli.argparsers import shap_scores_argsparser
 from basepairmodels.cli.bpnetutils import *
-from basepairmodels.cli.exceptionhandler import NoTracebackException
 from basepairmodels.cli.shaputils import *
-from basepairmodels.cli.logger import *
 from basepairmodels.cli.losses import MultichannelMultinomialNLL
 from mseqgen.sequtils import one_hot_encode
 from mseqgen.utils import gaussian1D_smoothing
-from tensorflow.keras.models import load_model
 from tensorflow.keras.utils import CustomObjectScope
-from load_model import load
 
 
 def insert_variant(seq, allele, position):
@@ -78,17 +74,39 @@ def shap_scores(model, peaks_df):
     counts_shap_scores = profile_model_counts_explainer.shap_values(
         [X, bias_counts_input], progress_message=100)
     
-    print(peaks_df.head(), X, counts_shap_scores[0])
-    # save the hyp shap scores, one hot sequences & chrom positions
-    # to a HDF5 file
-    save_scores(peaks_df, X, counts_shap_scores[0], output_fname)    
-        
+    #print(peaks_df.head(), X, counts_shap_scores[0])
+    return peaks_df, X, counts_shap_scores[0]
+
+def get_imp(scores, seqs, start, end):
+    scores = np.asarray(scores)
+    seqs = np.asarray(seqs)
+    vals = np.multiply(scores, seqs)
+    return vals[start:end]
+
+def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
+    c_chrom = peaks_df['chrom']
+    c_start = peaks_df['start']
+    c_end = peaks_df['end']
+    c_seqs = one_hot_sequences
+    c_scores = hyp_shap_scores
+    start, end = 1042, 1072
+    noneffect_scores = get_imp(c_scores[0], c_seqs[0], start, end)
+    effect_scores = get_imp(c_scores[1], c_seqs[1], start, end)
+    delta_scores = effect_scores-noneffect_scores
+    title1 = "Effect: " + c_chrom[0] + " [" + str(c_start[0] + start) + ", " + str(c_start[0]+end)+ "]"
+    title2 = "Noneffect: " + c_chrom[1] + " [" + str(c_start[1] + start) + ", " + str(c_start[1]+end)+ "]"
+    title3 = "Delta: " + c_chrom[1] + " [" + str(c_start[1] + start) + ", " + str(c_start[1]+end)+ "]"
+    viz_sequence.plot_weights(array=effect_scores, title=title1, filepath='static/images/app/effect.png')
+    viz_sequence.plot_weights(array=noneffect_scores, title=title2, filepath='static/images/app/noneffect.png')
+    viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png')
+
 def shap_scores_main(model, peaks_df):
-    with CustomObjectScope({'MultichannelMultinomialNLL': 
-                            MultichannelMultinomialNLL}):
-        shap_scores(model, peaks_df)
+    tf.compat.v1.disable_eager_execution()
+    peaks_df2, sequences, scores = shap_scores(model, peaks_df)
+    gen_graphs(peaks_df2, sequences, scores)
 
 if __name__ == '__main__':
+    tf.compat.v1.disable_eager_execution()
     with CustomObjectScope({'MultichannelMultinomialNLL': MultichannelMultinomialNLL}):
         model = load_model('../models/C24/model.h5')
     peaks_df = pd.read_csv('../data/peaks/app.bed', sep='\t', header=None, 

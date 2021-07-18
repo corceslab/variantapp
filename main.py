@@ -11,6 +11,16 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
 
+def home():
+    """Home page of app with form"""
+    form = form_rsID(request.form)
+    if request.method == 'POST' and form.validate():
+        cell_type = request.form['cell_type']
+        rsID = request.form['rsID']
+        generate_output_rsID(cell_type, rsID)
+        return render_template('output.html')
+    return render_template('index_rsID.html', form=form)
+
 # def home():
 #     """Home page of app with form"""
 #     form = form_values(request.form)
@@ -23,15 +33,5 @@ app = Flask(__name__)
 #         generate_output_values(cell_type, chromosome, position, allele1, allele2)
 #         return render_template('output.html')
 #     return render_template('index_values.html', form=form)
-
-def home():
-    """Home page of app with form"""
-    form = form_rsID(request.form)
-    if request.method == 'POST' and form.validate():
-        cell_type = request.form['cell_type']
-        rsID = request.form['rsID']
-        generate_output_rsID(cell_type, rsID)
-        return render_template('output.html')
-    return render_template('index_rsID.html', form=form)
 
 app.run(host='0.0.0.0', port=50000)

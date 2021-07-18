@@ -27,7 +27,7 @@ mkdir -p $SHAP_DIR
 
 var_shap \
     --reference-genome $REFERENCE_GENOME \
-    --model $MODEL_DIR/bpnet-hintv1/model.h5 \
+    --model $MODEL_DIR/C24/model.h5 \
     --bed-file $PEAKS_F \
     --output-dir $SHAP_DIR \
     --input-seq-len 2114 \
