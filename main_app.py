@@ -3,7 +3,6 @@ from flask import Flask, request
 from flask import render_template
 from utils.form import form_values, form_rsID
 from utils.utils import generate_output_values, generate_output_rsID
-from keras.models import load_model
 import tensorflow as tf
 from tensorflow import compat
 
@@ -35,4 +34,4 @@ def home():
 #     return render_template('index_values.html', form=form)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8000)

@@ -1,4 +1,2 @@
-rm -r /wynton/home/corces/allan/variantapp/static/images/app
-mkdir -p /wynton/home/corces/allan/variantapp/static/images/app
-rm -r /wynton/home/corces/allan/variantapp/shap
-mkdir -p /wynton/home/corces/allan/variantapp/shap
+rm -r /home/ubuntu/variantapp/static/images/app
+mkdir -p /home/ubuntu/variantapp/static/images/app

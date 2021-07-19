@@ -14,7 +14,7 @@ def query_rsID(rsID):
     data = hits[0]
     chrom = data['_id'].split(':')[0]
     vcf = data['vcf']
-    position = vcf['position']
+    position = int(vcf['position'])
     effect_allele = vcf['alt']
     noneffect_allele = vcf['ref']
     var_df = pd.DataFrame(columns = ['chrom', 'st', 'allele'])
@@ -22,6 +22,9 @@ def query_rsID(rsID):
     var_df = add_variant(var_df, chrom, position, noneffect_allele)
     var_df['summit'] = 0
     var_df['signalValue'] = 10
+    var_df['start'] = var_df['st'] + var_df['summit'] - (2114 // 2)
+    var_df['end'] = var_df['st'] + var_df['summit'] + (2114 // 2)
+    print(var_df.head())
     return var_df
 
 
@@ -31,6 +34,8 @@ def query_values(chrom, position, effect_allele, noneffect_allele):
     var_df = add_variant(var_df, chrom, position, noneffect_allele)
     var_df['summit'] = 0
     var_df['signalValue'] = 10
+    var_df['start'] = var_df['st'] + var_df['summit'] - (2114 // 2)
+    var_df['end'] = var_df['st'] + var_df['summit'] + (2114 // 2)
     return var_df
     
 

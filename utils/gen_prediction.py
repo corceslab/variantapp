@@ -15,7 +15,7 @@ def insert_variant(seq, allele, position):
     return left + allele + right
 
 def load_sequences(peaks_df):
-    fasta_ref = pysam.FastaFile('../reference/hg38.genome.fa') #don't forget to remove ..
+    fasta_ref = pysam.FastaFile('reference/hg38.genome.fa')
     sequences = []
     for idx, row in peaks_df.iterrows():
         start = row['start']
@@ -68,8 +68,9 @@ def predict_main(model, peaks_df):
     preds2 = model.predict(batch2)
     prediction1 = postprocess(preds1)
     prediction2 = postprocess(preds2)
-    gen_graphs(prediction1, '../static/images/app/noneffectpred.png') #..
-    gen_graphs(prediction2, '../static/images/app/effectpred.png') #..
+    gen_graphs(prediction1, 'static/images/app/noneffectpred.png')
+    gen_graphs(prediction2, 'static/images/app/effectpred.png')
+    print("###PREDICTIONS DONE###")
 
 if __name__ == '__main__':
     predict_main('../data/peaks/app.bed')

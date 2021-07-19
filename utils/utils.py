@@ -4,6 +4,7 @@ from numpy.core.fromnumeric import _shape_dispatcher
 import pandas as pd
 import subprocess
 import tensorflow as tf
+import time
 
 from utils.load_model import load
 from utils.query_variant import query_rsID, query_values
@@ -22,6 +23,7 @@ def generate_output_rsID(cell_type, rsID):
     model = load(cell_type)
     peaks_df = query_rsID(rsID)
     predict_main(model, peaks_df)
+    print("ORIG PEAKS_DF", peaks_df)
     shap_scores_main(model, peaks_df)
 
 if __name__ == '__main__':
