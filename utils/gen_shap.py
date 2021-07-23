@@ -102,9 +102,9 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     title1 = "Effect: " + c_chrom[0] + " [" + str(c_start[0] + start) + ", " + str(c_start[0]+end)+ "]"
     title2 = "Noneffect: " + c_chrom[1] + " [" + str(c_start[1] + start) + ", " + str(c_start[1]+end)+ "]"
     title3 = "Delta: " + c_chrom[1] + " [" + str(c_start[1] + start) + ", " + str(c_start[1]+end)+ "]"
-    viz_sequence.plot_weights(array=effect_scores, title=title1, filepath='static/images/app/effect.png', minval=minval, maxval=maxval)
-    viz_sequence.plot_weights(array=noneffect_scores, title=title2, filepath='static/images/app/noneffect.png', minval=minval, maxval=maxval)
-    viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png', minval=minval, maxval=maxval)
+    viz_sequence.plot_weights(array=effect_scores, title=title1, filepath='static/images/app/effect.png', minval=minval, maxval=maxval, figsize=(30, 3))
+    viz_sequence.plot_weights(array=noneffect_scores, title=title2, filepath='static/images/app/noneffect.png', minval=minval, maxval=maxval, figsize=(30, 3))
+    viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png', minval=minval, maxval=maxval, figsize=(30, 3))
 
 def shap_scores_main(model, peaks_df):
     # tf.compat.v1.disable_eager_execution()

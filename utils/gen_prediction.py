@@ -62,7 +62,7 @@ def get_range(pred1, pred2, delta, st, en):
     
 def gen_graphs(pred, title, filepath, minval, maxval):
     plt.switch_backend('Agg')
-    fig = plt.figure(figsize=(20,2))
+    fig = plt.figure(figsize=(30,3))
     plt.title(title)
     plt.xlabel("Bases")
     plt.ylabel("Predicted TF Binding")
@@ -72,6 +72,19 @@ def gen_graphs(pred, title, filepath, minval, maxval):
     plt.plot(np.zeros(400), color="gray")
     plt.savefig(filepath)
 
+def log_full_change(ref_track, alt_track):
+    ref_track = ref_track + 0.001
+    alt_track = alt_track + 0.001
+    track = np.divide(alt_track, ref_track)
+    #multiplier = 10000/np.sum(track)
+    #track = track * multiplier
+    track = np.log2(track)
+    lfcmin, lfcmax = np.amin(track), np.amax(track)
+    buffer = 0.1*(lfcmax-lfcmin)
+    lfcmin-=buffer
+    lfcmax+=buffer
+    return track, lfcmin, lfcmax
+
 def predict_main(model, peaks_df):
     sequences = load_sequences(peaks_df)
     batch1, batch2 = make_batches(sequences)
@@ -80,11 +93,13 @@ def predict_main(model, peaks_df):
     prediction1 = postprocess(preds1)
     prediction2 = postprocess(preds2)
     delta = np.subtract(prediction2, prediction1)
+    lfc, lfcmin, lfcmax = log_full_change(prediction1, prediction2)
     st, en = 300, 700
     minval, maxval = get_range(prediction1, prediction2, delta, st, en)
     gen_graphs(prediction1[st:en], 'Noneffect Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/noneffectpred.png', minval, maxval)
     gen_graphs(prediction2[st:en], 'Effect Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/effectpred.png', minval, maxval)
     gen_graphs(delta[st:en], 'Delta Prediction Graph', 'static/images/app/deltapred.png', minval, maxval)
+    gen_graphs(lfc[st:en], 'Log Full Change Graph [alt/ref]', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
 
 if __name__ == '__main__':
     predict_main('../data/peaks/app.bed')

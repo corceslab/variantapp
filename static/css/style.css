@@ -1,6 +1,6 @@
 body {
-    margin: 20;
-    padding: 20;
+    margin: 0;
+    padding: 0;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: black;
   }
@@ -54,7 +54,7 @@ body {
     margin-left: 0;
     margin-right: 0;
     font-weight: bold;
-}
+  }
 
   h2 {
     font-size: 1em;
@@ -78,7 +78,7 @@ body {
     padding: 0;
     overflow: hidden;
     background-color: #333;
-}
+  }
 
 li {
     float: left;
@@ -171,12 +171,6 @@ form textarea#message {
   background-image: -o-linear-gradient(top, #dbdbdb, #cccccc);
   background-image: linear-gradient(top, #dbdbdb, #cccccc);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#dbdbdb, endColorstr=#cccccc);
 }  */
-img {
-  width: 1000px;
-  height: auto;
-  align-content: center;
-  margin-left: 0;
-}
 
 /* Message flashing */
 .flash {
@@ -185,4 +179,11 @@ img {
     width: 400px;
     display: table;
     margin: auto;
+  }
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
   }
