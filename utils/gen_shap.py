@@ -80,6 +80,14 @@ def get_imp(scores, seqs, start, end):
     vals = np.multiply(scores, seqs)
     return vals[start:end]
 
+def get_range(shap1, shap2, delta):
+    minval = min(np.amin(shap1), np.amin(shap2), np.amin(delta))
+    maxval = max(np.amax(shap1), np.amax(shap2), np.amax(delta))
+    buffer = 0.1 * (maxval-minval)
+    minval-=buffer
+    maxval+=buffer
+    return minval, maxval
+
 def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     c_chrom = peaks_df['chrom']
     c_start = peaks_df['start']
@@ -90,12 +98,13 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     noneffect_scores = get_imp(c_scores[0], c_seqs[0], start, end)
     effect_scores = get_imp(c_scores[1], c_seqs[1], start, end)
     delta_scores = effect_scores-noneffect_scores
+    minval, maxval = get_range(noneffect_scores, effect_scores, delta_scores)
     title1 = "Effect: " + c_chrom[0] + " [" + str(c_start[0] + start) + ", " + str(c_start[0]+end)+ "]"
     title2 = "Noneffect: " + c_chrom[1] + " [" + str(c_start[1] + start) + ", " + str(c_start[1]+end)+ "]"
     title3 = "Delta: " + c_chrom[1] + " [" + str(c_start[1] + start) + ", " + str(c_start[1]+end)+ "]"
-    viz_sequence.plot_weights(array=effect_scores, title=title1, filepath='static/images/app/effect.png') #..
-    viz_sequence.plot_weights(array=noneffect_scores, title=title2, filepath='static/images/app/noneffect.png') #..
-    viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png')  #..
+    viz_sequence.plot_weights(array=effect_scores, title=title1, filepath='static/images/app/effect.png', minval=minval, maxval=maxval)
+    viz_sequence.plot_weights(array=noneffect_scores, title=title2, filepath='static/images/app/noneffect.png', minval=minval, maxval=maxval)
+    viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png', minval=minval, maxval=maxval)
 
 def shap_scores_main(model, peaks_df):
     # tf.compat.v1.disable_eager_execution()

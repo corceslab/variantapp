@@ -52,13 +52,24 @@ def postprocess(pred):
     counts = np.exp(pred[1])[0][0]
     return profile*counts
 
-def gen_graphs(pred, filepath):
+def get_range(pred1, pred2, delta, st, en):
+    minval = min(np.amin(pred1[st:en]), np.amin(pred2[st:en]), np.amin(delta[st:en]))
+    maxval = max(np.amax(pred1[st:en]), np.amax(pred2[st:en]), np.amax(delta[st:en]))
+    buffer = 0.1 * (maxval-minval)
+    minval-=buffer
+    maxval+=buffer
+    return minval, maxval
+    
+def gen_graphs(pred, title, filepath, minval, maxval):
     plt.switch_backend('Agg')
     fig = plt.figure(figsize=(20,2))
-    plt.title("Prediction")
+    plt.title(title)
     plt.xlabel("Bases")
     plt.ylabel("Predicted TF Binding")
-    plt.plot(pred[300:700])
+    plt.xlim([0, 400])
+    plt.ylim([minval, maxval])
+    plt.plot(pred)
+    plt.plot(np.zeros(400), color="gray")
     plt.savefig(filepath)
 
 def predict_main(model, peaks_df):
@@ -68,9 +79,12 @@ def predict_main(model, peaks_df):
     preds2 = model.predict(batch2)
     prediction1 = postprocess(preds1)
     prediction2 = postprocess(preds2)
-    gen_graphs(prediction1, 'static/images/app/noneffectpred.png')
-    gen_graphs(prediction2, 'static/images/app/effectpred.png')
-    print("###PREDICTIONS DONE###")
+    delta = np.subtract(prediction2, prediction1)
+    st, en = 300, 700
+    minval, maxval = get_range(prediction1, prediction2, delta, st, en)
+    gen_graphs(prediction1[st:en], 'Noneffect Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/noneffectpred.png', minval, maxval)
+    gen_graphs(prediction2[st:en], 'Effect Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/effectpred.png', minval, maxval)
+    gen_graphs(delta[st:en], 'Delta Prediction Graph', 'static/images/app/deltapred.png', minval, maxval)
 
 if __name__ == '__main__':
     predict_main('../data/peaks/app.bed')
