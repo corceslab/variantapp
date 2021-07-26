@@ -1,0 +1,27 @@
+.mystyle {
+    align-content: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 10pt; 
+    font-family: "Helvetica Neue";
+    border-collapse: collapse; 
+    border: 1px solid silver;
+    max-width: fit-content;
+    white-space: nowrap;
+}
+
+.mystyle td, th {
+    max-width: fit-content;
+    white-space: nowrap;
+    padding: 5px;
+}
+
+.mystyle tr:nth-child(even) {
+    background: #E0E0E0;
+}
+
+.mystyle tr:hover {
+    background: silver;
+    cursor: pointer;
+}

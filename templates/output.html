@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <header>
     <title>Model Output</title>
     <link rel="stylesheet" href="/static/css/style.css">
@@ -14,6 +13,15 @@
     <img src="../static/images/app/effect.png" alt="Effect Importance" class="center">
     <img src="../static/images/app/noneffect.png" alt="Noneffect Importance" class="center">
     <img src="../static/images/app/delta.png" alt="Delta Importance" class="center">
+    {% include 'motifs.html' without context %}
+    <div id="motifs"></div>
 </body>
 
 </html>
+
+<script src="../static/js/jquery.js"></script> 
+    <script> 
+    $(function(){
+      $("#motifs").load("./motifs.html"); 
+    });
+    </script> 
