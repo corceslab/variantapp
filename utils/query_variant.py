@@ -12,7 +12,9 @@ def query_rsID(rsID):
     rsID_info = mv.query('dbsnp.rsid:'+rsID, fields='vcf', assembly='hg38')
     hits = rsID_info['hits']
     data = hits[0]
+    #print("data _id:", data['_id'])
     chrom = data['_id'].split(':')[0]
+    #print("chrom:", chrom)
     vcf = data['vcf']
     position = int(vcf['position'])
     effect_allele = vcf['alt']

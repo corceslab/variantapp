@@ -26,7 +26,7 @@ def generate_output_rsID(cell_type, rsID):
     peaks_df = query_rsID(rsID)
     predict_main(model, peaks_df)
     shap_scores_main(model, peaks_df)
-    get_motifs(peaks_df['chrom'][0], peaks_df['st'])
+    get_motifs(peaks_df.iloc[0]['chrom'], peaks_df.iloc[0]['st'])
 
 if __name__ == '__main__':
     #generate_output_values('abc', 'chr1', 35641660, 'A', 'G')
