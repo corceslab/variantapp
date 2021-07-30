@@ -7,9 +7,9 @@ import pysam
 import shap
 import tensorflow as tf
 import tensorflow_probability as tfp
-from modisco.visualization import viz_sequence
 import time
 
+from modisco.visualization import viz_sequence
 from basepairmodels.cli.bpnetutils import *
 from basepairmodels.cli.shaputils import *
 from basepairmodels.cli.losses import MultichannelMultinomialNLL
@@ -18,6 +18,8 @@ from mseqgen.utils import gaussian1D_smoothing
 from tensorflow.keras.utils import CustomObjectScope
 from tensorflow import compat
 from tensorflow.keras.models import load_model
+
+from utils.load_model import load
 
 
 def insert_variant(seq, allele, position):
@@ -91,7 +93,8 @@ def get_range(shap1, shap2, delta):
 def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     c_chrom = peaks_df['chrom']
     c_start = peaks_df['start']
-    c_end = peaks_df['end']
+    print(c_chrom.head())
+    print(c_start.head())
     c_seqs = one_hot_sequences
     c_scores = hyp_shap_scores
     start, end = 1042, 1072
@@ -106,15 +109,13 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     viz_sequence.plot_weights(array=noneffect_scores, title=title2, filepath='static/images/app/noneffect.png', minval=minval, maxval=maxval, figsize=(30, 3))
     viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png', minval=minval, maxval=maxval, figsize=(30, 3))
 
-def shap_scores_main(model, peaks_df):
+def shap_scores_main(cell_type, peaks_df):
     # tf.compat.v1.disable_eager_execution()
     # peaks_df2, sequences, scores = shap_scores(model, peaks_df)
     # gen_graphs(peaks_df2, sequences, scores)
     tf.compat.v1.disable_eager_execution()
-    with CustomObjectScope({'MultichannelMultinomialNLL': MultichannelMultinomialNLL}):
-        model = load_model('models/C24/model.h5')
-    peaks_df = pd.read_csv('data/peaks/app.bed', sep='\t', header=None, 
-                            names=['chrom', 'st', 'allele', 'summit', 'signalValue'])
+    model = load(cell_type)
+    print(peaks_df.head())
     peaks_df['start'] = peaks_df['st'] + peaks_df['summit'] - (2114 // 2)
     peaks_df['end'] = peaks_df['st'] + peaks_df['summit'] + (2114 // 2)
     peaks_df2, sequences, scores = shap_scores(model, peaks_df)

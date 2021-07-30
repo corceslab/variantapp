@@ -64,7 +64,6 @@ def gen_graphs(pred, title, filepath, minval, maxval):
     plt.switch_backend('Agg')
     fig = plt.figure(figsize=(30,3))
     plt.title(title)
-    plt.xlabel("Bases")
     plt.ylabel("Predicted TF Binding")
     plt.xlim([0, 400])
     plt.ylim([minval, maxval])

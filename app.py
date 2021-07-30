@@ -5,6 +5,7 @@ from utils.form import form_values, form_rsID
 from utils.utils import generate_output_values, generate_output_rsID
 import tensorflow as tf
 from tensorflow import compat
+from utils.query_motif import get_motifs
 
 app = Flask(__name__)
 

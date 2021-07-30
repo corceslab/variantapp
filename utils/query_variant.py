@@ -26,6 +26,7 @@ def query_rsID(rsID):
     var_df['signalValue'] = 10
     var_df['start'] = var_df['st'] + var_df['summit'] - (2114 // 2)
     var_df['end'] = var_df['st'] + var_df['summit'] + (2114 // 2)
+    var_df = var_df.reset_index(drop=True)
     print(var_df.head())
     return var_df
 
@@ -38,6 +39,7 @@ def query_values(chrom, position, effect_allele, noneffect_allele):
     var_df['signalValue'] = 10
     var_df['start'] = var_df['st'] + var_df['summit'] - (2114 // 2)
     var_df['end'] = var_df['st'] + var_df['summit'] + (2114 // 2)
+    var_df = var_df.reset_index(drop=True)
     return var_df
     
 
