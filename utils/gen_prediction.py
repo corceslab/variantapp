@@ -52,9 +52,9 @@ def postprocess(pred):
     counts = np.exp(pred[1])[0][0]
     return profile*counts
 
-def get_range(pred1, pred2, delta, st, en):
-    minval = min(np.amin(pred1[st:en]), np.amin(pred2[st:en]), np.amin(delta[st:en]))
-    maxval = max(np.amax(pred1[st:en]), np.amax(pred2[st:en]), np.amax(delta[st:en]))
+def get_range(pred1, pred2, st, en):
+    minval = min(np.amin(pred1[st:en]), np.amin(pred2[st:en]))
+    maxval = max(np.amax(pred1[st:en]), np.amax(pred2[st:en]))
     buffer = 0.1 * (maxval-minval)
     minval-=buffer
     maxval+=buffer
@@ -92,13 +92,13 @@ def predict_main(model, peaks_df):
     preds2 = model.predict(batch2)
     prediction1 = postprocess(preds1)
     prediction2 = postprocess(preds2)
-    delta = np.subtract(prediction2, prediction1)
+    #delta = np.subtract(prediction2, prediction1)
     lfc, lfcmin, lfcmax = log_full_change(prediction1, prediction2)
     st, en = 300, 700
-    minval, maxval = get_range(prediction1, prediction2, delta, st, en)
+    minval, maxval = get_range(prediction1, prediction2, st, en)
     gen_graphs(prediction1[st:en], 'Noneffect Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/noneffectpred.png', minval, maxval)
     gen_graphs(prediction2[st:en], 'Effect Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/effectpred.png', minval, maxval)
-    gen_graphs(delta[st:en], 'Delta Prediction Graph', 'static/images/app/deltapred.png', minval, maxval)
+    #gen_graphs(delta[st:en], 'Delta Prediction Graph', 'static/images/app/deltapred.png', minval, maxval)
     gen_graphs(lfc[st:en], 'Log Full Change Graph [alt/ref]', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
 
 if __name__ == '__main__':
