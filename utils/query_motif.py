@@ -9,12 +9,13 @@ def path_to_image_html(best_model):
 def get_motifs(chrom, loc):
     print(chrom, loc)
     utils_dir='/home/ubuntu/variantapp/utils'
-    input_chrom = "'" + str(chrom) + "'"
-    input_loc = "'" + str(loc) + "'"
+    input_chrom = str(chrom)
+    input_loc = str(loc)
     print(input_chrom, input_loc)
     # query = "\'" + str(chrom) + '\:' + str(loc) + '\-' + str(loc) + "\'"
     print('Querying motifs from Vierstra')
-    os.system("sh utils/query_motif.sh -c " + input_chrom + " -l " + input_loc)
+    subprocess.call(['sh', 'utils/query_motif.sh', '-c', input_chrom, '-l', input_loc])
+    #os.system("sh utils/query_motif.sh -c " + input_chrom + " -l " + input_loc)
     # os.system("/home/ubuntu/variantapp/utils/query_motif.sh -a " + query)
     # subprocess.call(['sh query_motif.sh ', input_chrom, input_loc], shell=True, cwd=utils_dir) #../
     print('Finished querying motifs')
