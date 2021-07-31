@@ -13,6 +13,8 @@ app = Flask(__name__)
 
 def home():
     """Home page of app with form"""
+    app.jinja_env.auto_reload = True
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
     form = form_rsID(request.form)
     if request.method == 'POST' and form.validate():
         cell_type = request.form['cell_type']
@@ -35,6 +37,4 @@ def home():
 #     return render_template('index_values.html', form=form)
 
 if __name__ == '__main__':
-    app.jinja_env.auto_reload = True
-    app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.run(debug=True)
+    app.run()
