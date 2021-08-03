@@ -16,6 +16,11 @@
     {% block content %}
     {% include 'motifs.html' %}
     {% endblock %}
+
+    <form method="get" action="/static/zip/exports.zip" class="centerbutton">
+        <button type="submit" class="downloadbutton">Download Data</button>
+    </form>
+
 </body>
 
 </html>

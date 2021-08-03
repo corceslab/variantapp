@@ -101,6 +101,17 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     noneffect_scores = get_imp(c_scores[0], c_seqs[0], start, end)
     effect_scores = get_imp(c_scores[1], c_seqs[1], start, end)
     delta_scores = effect_scores-noneffect_scores
+
+    with open("static/csv/data.csv", "ab") as f:
+        f.write(b"Noneffect Importance Scores: \n")
+        np.savetxt(f, noneffect_scores, delimiter=",")
+        f.write(b"\n")
+        f.write(b"Effect Importance Scores: \n")
+        np.savetxt(f, effect_scores, delimiter=",")
+        f.write(b"\n")
+        f.write(b"Delta Importance Scores: \n")
+        np.savetxt(f, delta_scores, delimiter=",")
+
     minval, maxval = get_range(noneffect_scores, effect_scores, delta_scores)
     title1 = "Effect: " + c_chrom[0] + " [" + str(c_start[0] + start) + ", " + str(c_start[0]+end)+ "]"
     title2 = "Noneffect: " + c_chrom[1] + " [" + str(c_start[1] + start) + ", " + str(c_start[1]+end)+ "]"

@@ -34,6 +34,8 @@ def get_motifs(chrom, loc):
     </body>
     </html>
     '''
+    with open('static/csv/data.csv', 'a') as f:
+        motifs.to_csv(f, header=True, index=True)
     with open('templates/motifs.html', 'w') as f: #../
         f.write(html_string.format(table=motifs.to_html(classes='mystyle', escape=False, formatters=dict(image=path_to_image_html), index=False)))
 

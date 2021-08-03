@@ -187,3 +187,27 @@ form textarea#message {
     margin-right: auto;
     width: 90%;
   }
+
+.centerbutton {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 20%;
+  }
+
+.downloadbutton {
+  background-color: darkblue;
+  font-family: Helvetica;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: -webkit-box;
+  -webkit-border-radius: 0px; 
+     -moz-border-radius: 0px;
+          border-radius: 0px;
+  border:1px solid #d8d8d8;
+  padding: 10px; 
+  font-size:20px;
+  text-align: center; 
+  color:white; 
+  }

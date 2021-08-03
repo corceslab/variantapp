@@ -93,6 +93,18 @@ def predict_main(model, peaks_df):
     prediction2 = postprocess(preds2)
     #delta = np.subtract(prediction2, prediction1)
     lfc, lfcmin, lfcmax = log_full_change(prediction1, prediction2)
+    
+    with open("static/csv/data.csv", "ab") as f:
+        f.write(b"Noneffect Prediction: \n")
+        np.savetxt(f, prediction1, delimiter=",")
+        f.write(b"\n")
+        f.write(b"Effect Prediction: \n")
+        np.savetxt(f, prediction2, delimiter=",")
+        f.write(b"\n")
+        f.write(b"Log-Full-Change Prediction: \n")
+        np.savetxt(f, lfc, delimiter=",")
+        f.write(b"\n")
+    
     st, en = 300, 700
     minval, maxval = get_range(prediction1, prediction2, st, en)
     gen_graphs(prediction1[st:en], 'Noneffect Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/noneffectpred.png', minval, maxval)
