@@ -12,10 +12,10 @@ from utils.gen_prediction import predict_main
 from utils.gen_shap import shap_scores_main
 from utils.query_motif import get_motifs
 
-def generate_output_values(cell_type, chrom, position, effect_allele, noneffect_allele):
+def generate_output_values(cell_type, chrom, position, alt_allele, ref_allele):
     subprocess.call(['sh' ,'utils/reset.sh'])
     model = load(cell_type)
-    peaks_df = query_values(chrom, position, effect_allele, noneffect_allele)
+    peaks_df = query_values(chrom, position, alt_allele, ref_allele)
     predict_main(model, peaks_df)
     shap_scores_main(cell_type, peaks_df)
     get_motifs(peaks_df.iloc[0]['chrom'], peaks_df.iloc[0]['st'])

@@ -17,11 +17,12 @@ def query_rsID(rsID):
     #print("chrom:", chrom)
     vcf = data['vcf']
     position = int(vcf['position'])
-    effect_allele = vcf['alt']
-    noneffect_allele = vcf['ref']
+    alt_allele = vcf['alt']
+    ref_allele = vcf['ref']
     var_df = pd.DataFrame(columns = ['chrom', 'st', 'allele'])
-    var_df = add_variant(var_df, chrom, position, effect_allele)
-    var_df = add_variant(var_df, chrom, position, noneffect_allele)
+    # alt is the first row, ref is the second row
+    var_df = add_variant(var_df, chrom, position, alt_allele)
+    var_df = add_variant(var_df, chrom, position, ref_allele)
     var_df['summit'] = 0
     var_df['signalValue'] = 10
     var_df['start'] = var_df['st'] + var_df['summit'] - (2114 // 2)

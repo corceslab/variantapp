@@ -103,19 +103,42 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     delta_scores = effect_scores-noneffect_scores
 
     with open("static/csv/data.csv", "ab") as f:
-        f.write(b"Noneffect Importance Scores: \n")
+        f.write(b"Reference Importance Scores: \n")
         np.savetxt(f, noneffect_scores, delimiter=",")
         f.write(b"\n")
-        f.write(b"Effect Importance Scores: \n")
+        f.write(b"Alternate Importance Scores: \n")
         np.savetxt(f, effect_scores, delimiter=",")
         f.write(b"\n")
         f.write(b"Delta Importance Scores: \n")
         np.savetxt(f, delta_scores, delimiter=",")
 
+
+    alt_allele_seq = c_seqs[0][1056]
+    alt = 'N'
+    if alt_allele_seq[0] == 1:
+        alt = 'A'
+    elif alt_allele_seq[1] == 1:
+        alt = 'C'
+    elif alt_allele_seq[0] == 1:
+        alt = 'G'
+    elif alt_allele_seq[0] == 1:
+        alt = 'T'
+    
+    ref_allele_seq = c_seqs[1][1056]
+    ref = 'N'
+    if ref_allele_seq[0] == 1:
+        ref = 'A'
+    elif ref_allele_seq[1] == 1:
+        ref = 'C'
+    elif ref_allele_seq[0] == 1:
+        ref = 'G'
+    elif ref_allele_seq[0] == 1:
+        ref = 'T'
+
     minval, maxval = get_range(noneffect_scores, effect_scores, delta_scores)
-    title1 = "Effect: " + c_chrom[0] + " [" + str(c_start[0] + start) + ", " + str(c_start[0]+end)+ "]"
-    title2 = "Noneffect: " + c_chrom[1] + " [" + str(c_start[1] + start) + ", " + str(c_start[1]+end)+ "]"
-    title3 = "Delta: " + c_chrom[1] + " [" + str(c_start[1] + start) + ", " + str(c_start[1]+end)+ "]"
+    title1 = "Alternate Importance Scores [allele: " + alt + "]"
+    title2 = "Reference Importance Scores [allele: " + ref + "]"
+    title3 = "Delta: [alt-ref]"
     viz_sequence.plot_weights(array=effect_scores, title=title1, filepath='static/images/app/effect.png', minval=minval, maxval=maxval, figsize=(30, 3))
     viz_sequence.plot_weights(array=noneffect_scores, title=title2, filepath='static/images/app/noneffect.png', minval=minval, maxval=maxval, figsize=(30, 3))
     viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png', minval=minval, maxval=maxval, figsize=(30, 3))

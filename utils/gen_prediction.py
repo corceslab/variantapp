@@ -95,10 +95,10 @@ def predict_main(model, peaks_df):
     lfc, lfcmin, lfcmax = log_full_change(prediction1, prediction2)
     
     with open("static/csv/data.csv", "ab") as f:
-        f.write(b"Noneffect Prediction: \n")
+        f.write(b"Alternate Allele Prediction: \n")
         np.savetxt(f, prediction1, delimiter=",")
         f.write(b"\n")
-        f.write(b"Effect Prediction: \n")
+        f.write(b"Reference Allele Prediction: \n")
         np.savetxt(f, prediction2, delimiter=",")
         f.write(b"\n")
         f.write(b"Log-Full-Change Prediction: \n")
@@ -107,8 +107,8 @@ def predict_main(model, peaks_df):
     
     st, en = 300, 700
     minval, maxval = get_range(prediction1, prediction2, st, en)
-    gen_graphs(prediction1[st:en], 'Noneffect Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/noneffectpred.png', minval, maxval)
-    gen_graphs(prediction2[st:en], 'Effect Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/effectpred.png', minval, maxval)
+    gen_graphs(prediction1[st:en], 'Alternate Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/noneffectpred.png', minval, maxval)
+    gen_graphs(prediction2[st:en], 'Reference Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/effectpred.png', minval, maxval)
     #gen_graphs(delta[st:en], 'Delta Prediction Graph', 'static/images/app/deltapred.png', minval, maxval)
     gen_graphs(lfc[st:en], 'Log Full Change Graph [alt/ref]', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
 
