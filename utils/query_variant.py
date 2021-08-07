@@ -19,6 +19,8 @@ def query_rsID(rsID):
     position = int(vcf['position'])
     alt_allele = vcf['alt']
     ref_allele = vcf['ref']
+    print("alt:", alt_allele)
+    print("ref:", ref_allele)
     var_df = pd.DataFrame(columns = ['chrom', 'st', 'allele'])
     # alt is the first row, ref is the second row
     var_df = add_variant(var_df, chrom, position, alt_allele)

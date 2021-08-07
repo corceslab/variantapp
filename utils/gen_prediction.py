@@ -107,8 +107,8 @@ def predict_main(model, peaks_df):
     
     st, en = 300, 700
     minval, maxval = get_range(prediction1, prediction2, st, en)
-    gen_graphs(prediction1[st:en], 'Alternate Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/noneffectpred.png', minval, maxval)
-    gen_graphs(prediction2[st:en], 'Reference Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/effectpred.png', minval, maxval)
+    gen_graphs(prediction1[st:en], 'Alternate Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/altpred.png', minval, maxval)
+    gen_graphs(prediction2[st:en], 'Reference Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/refpred.png', minval, maxval)
     #gen_graphs(delta[st:en], 'Delta Prediction Graph', 'static/images/app/deltapred.png', minval, maxval)
     gen_graphs(lfc[st:en], 'Log Full Change Graph [alt/ref]', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
 

@@ -98,16 +98,16 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     c_seqs = one_hot_sequences
     c_scores = hyp_shap_scores
     start, end = 1042, 1072
-    noneffect_scores = get_imp(c_scores[0], c_seqs[0], start, end)
-    effect_scores = get_imp(c_scores[1], c_seqs[1], start, end)
-    delta_scores = effect_scores-noneffect_scores
+    alt_scores = get_imp(c_scores[0], c_seqs[0], start, end)
+    ref_scores = get_imp(c_scores[1], c_seqs[1], start, end)
+    delta_scores = alt_scores-ref_scores
 
     with open("static/csv/data.csv", "ab") as f:
         f.write(b"Reference Importance Scores: \n")
-        np.savetxt(f, noneffect_scores, delimiter=",")
+        np.savetxt(f, alt_scores, delimiter=",")
         f.write(b"\n")
         f.write(b"Alternate Importance Scores: \n")
-        np.savetxt(f, effect_scores, delimiter=",")
+        np.savetxt(f, ref_scores, delimiter=",")
         f.write(b"\n")
         f.write(b"Delta Importance Scores: \n")
         np.savetxt(f, delta_scores, delimiter=",")
@@ -119,9 +119,9 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
         alt = 'A'
     elif alt_allele_seq[1] == 1:
         alt = 'C'
-    elif alt_allele_seq[0] == 1:
+    elif alt_allele_seq[2] == 1:
         alt = 'G'
-    elif alt_allele_seq[0] == 1:
+    elif alt_allele_seq[3] == 1:
         alt = 'T'
     
     ref_allele_seq = c_seqs[1][1056]
@@ -130,17 +130,17 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
         ref = 'A'
     elif ref_allele_seq[1] == 1:
         ref = 'C'
-    elif ref_allele_seq[0] == 1:
+    elif ref_allele_seq[2] == 1:
         ref = 'G'
-    elif ref_allele_seq[0] == 1:
+    elif ref_allele_seq[3] == 1:
         ref = 'T'
 
-    minval, maxval = get_range(noneffect_scores, effect_scores, delta_scores)
+    minval, maxval = get_range(alt_scores, ref_scores, delta_scores)
     title1 = "Alternate Importance Scores [allele: " + alt + "]"
     title2 = "Reference Importance Scores [allele: " + ref + "]"
     title3 = "Delta: [alt-ref]"
-    viz_sequence.plot_weights(array=effect_scores, title=title1, filepath='static/images/app/effect.png', minval=minval, maxval=maxval, figsize=(30, 3))
-    viz_sequence.plot_weights(array=noneffect_scores, title=title2, filepath='static/images/app/noneffect.png', minval=minval, maxval=maxval, figsize=(30, 3))
+    viz_sequence.plot_weights(array=alt_scores, title=title1, filepath='static/images/app/altimp.png', minval=minval, maxval=maxval, figsize=(30, 3))
+    viz_sequence.plot_weights(array=ref_scores, title=title2, filepath='static/images/app/refimp.png', minval=minval, maxval=maxval, figsize=(30, 3))
     viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png', minval=minval, maxval=maxval, figsize=(30, 3))
 
 def shap_scores_main(cell_type, peaks_df):
