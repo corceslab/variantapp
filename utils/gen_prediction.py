@@ -9,6 +9,8 @@ from tensorflow.keras.utils import CustomObjectScope
 from mseqgen.sequtils import one_hot_encode
 from scipy.special import softmax
 from matplotlib import pyplot as plt
+from matplotlib.patches import Rectangle
+
 
 def insert_variant(seq, allele, position):
     left, right = seq[:position-1], seq[position:]
@@ -65,10 +67,12 @@ def gen_graphs(pred, title, filepath, minval, maxval):
     fig = plt.figure(figsize=(30,3))
     plt.title(title)
     plt.ylabel("Predicted TF Binding")
-    plt.xlim([0, 400])
+    plt.xlim([0, 399])
     plt.ylim([minval, maxval])
     plt.plot(pred)
     plt.plot(np.zeros(400), color="gray")
+    currentAxis = plt.gca()
+    currentAxis.add_patch(Rectangle((199 - .5, minval), 1, maxval-minval, facecolor="grey", alpha=0.5))
     plt.savefig(filepath)
 
 def log_full_change(ref_track, alt_track):

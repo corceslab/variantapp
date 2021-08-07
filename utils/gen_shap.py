@@ -97,7 +97,9 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     print(c_start.head())
     c_seqs = one_hot_sequences
     c_scores = hyp_shap_scores
-    start, end = 1042, 1072
+    center = 1056
+    diff = 50
+    start, end = center - diff, center + diff + 1
     alt_scores = get_imp(c_scores[0], c_seqs[0], start, end)
     ref_scores = get_imp(c_scores[1], c_seqs[1], start, end)
     delta_scores = alt_scores-ref_scores
