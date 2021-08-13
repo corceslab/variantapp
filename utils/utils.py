@@ -20,12 +20,12 @@ def generate_output_values(cell_type, chrom, position, alt_allele, ref_allele):
     shap_scores_main(cell_type, peaks_df)
     get_motifs(peaks_df.iloc[0]['chrom'], peaks_df.iloc[0]['st'])
 
-def generate_output_rsID(cell_type, rsID):
+def generate_output_rsID(cell_type, rsID, nc):
     subprocess.call(['sh' ,'utils/reset.sh'])
-    model = load(cell_type)
+    model = load(cell_type, nc)
     peaks_df = query_rsID(rsID)
     predict_main(model, peaks_df)
-    shap_scores_main(cell_type, peaks_df)
+    shap_scores_main(cell_type, peaks_df, nc)
     get_motifs(peaks_df.iloc[0]['chrom'], peaks_df.iloc[0]['st'])
     subprocess.call(['sh' ,'utils/export.sh'])
 

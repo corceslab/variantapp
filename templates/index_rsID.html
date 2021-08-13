@@ -21,6 +21,10 @@
     {% for message in form.rsID.errors %}
     <div class="flash">{{ message }}</div>
     {% endfor %}
+    
+    {% for message in form.nc.errors %}
+    <div class="flash">{{ message }}</div>
+    {% endfor %}
 
 
     <form method=post>
@@ -31,6 +35,9 @@
       {{ form.rsID.label }}
       {{ form.rsID }}
       
+      {{ form.nc.label }}
+      {{ form.nc }}
+
       <br>
       <!-- {{ form.submit }} -->
       <input type="submit" value="Submit" onclick="$('#loading').show();">

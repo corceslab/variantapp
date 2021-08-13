@@ -19,7 +19,8 @@ def home():
     if request.method == 'POST' and form.validate():
         cell_type = request.form['cell_type']
         rsID = request.form['rsID']
-        generate_output_rsID(cell_type, rsID)
+        nc = request.form['nc']
+        generate_output_rsID(cell_type, rsID, nc)
         return render_template('output.html')
     return render_template('index_rsID.html', form=form)
 

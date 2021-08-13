@@ -1,3 +1,4 @@
+from typing import Text
 from wtforms import (Form, TextField, IntegerField, SelectField, SubmitField, validators)
 
 class form_values(Form):
@@ -25,4 +26,5 @@ class form_rsID(Form):
         ('C17 - Astrocytes (unclassified)'), ('C18 - Potential Doublets'), ('C19 - Oligodendrocytes'), ('C20 - Oligodendrocytes'), ('C21 - Oligodendrocytes'), ('C22 - Oligodendrocytes'), \
         ('C23 - Oligodendrocytes'), ('C24 - Microglia') ])
     rsID = TextField("Enter the variant's rsID (e.g. rs1237999):", validators=[validators.InputRequired()])
+    nc = SelectField(u'Negative Sampling', choices=[("00"), ("02"), ("03"), ("05"), ("10"), ("20"), ("50")])
     submit = SubmitField("Submit")

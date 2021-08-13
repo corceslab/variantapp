@@ -98,7 +98,7 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     c_seqs = one_hot_sequences
     c_scores = hyp_shap_scores
     center = 1056
-    diff = 50
+    diff = 100
     start, end = center - diff, center + diff + 1
     alt_scores = get_imp(c_scores[0], c_seqs[0], start, end)
     ref_scores = get_imp(c_scores[1], c_seqs[1], start, end)
@@ -141,16 +141,16 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     title1 = "Alternate Importance Scores [allele: " + alt + "]"
     title2 = "Reference Importance Scores [allele: " + ref + "]"
     title3 = "Delta: [alt-ref]"
-    viz_sequence.plot_weights(array=alt_scores, title=title1, filepath='static/images/app/altimp.png', minval=minval, maxval=maxval, figsize=(30, 3))
-    viz_sequence.plot_weights(array=ref_scores, title=title2, filepath='static/images/app/refimp.png', minval=minval, maxval=maxval, figsize=(30, 3))
-    viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png', minval=minval, maxval=maxval, figsize=(30, 3))
+    viz_sequence.plot_weights(array=alt_scores, title=title1, filepath='static/images/app/altimp.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
+    viz_sequence.plot_weights(array=ref_scores, title=title2, filepath='static/images/app/refimp.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
+    viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
 
-def shap_scores_main(cell_type, peaks_df):
+def shap_scores_main(cell_type, peaks_df, nc):
     # tf.compat.v1.disable_eager_execution()
     # peaks_df2, sequences, scores = shap_scores(model, peaks_df)
     # gen_graphs(peaks_df2, sequences, scores)
     tf.compat.v1.disable_eager_execution()
-    model = load(cell_type)
+    model = load(cell_type, nc)
     print(peaks_df.head())
     peaks_df['start'] = peaks_df['st'] + peaks_df['summit'] - (2114 // 2)
     peaks_df['end'] = peaks_df['st'] + peaks_df['summit'] + (2114 // 2)
