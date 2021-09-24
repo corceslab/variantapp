@@ -141,9 +141,12 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     title1 = "Alternate Importance Scores [allele: " + alt + "]"
     title2 = "Reference Importance Scores [allele: " + ref + "]"
     title3 = "Delta: [alt-ref]"
-    viz_sequence.plot_weights(array=alt_scores, title=title1, filepath='static/images/app/altimp.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
-    viz_sequence.plot_weights(array=ref_scores, title=title2, filepath='static/images/app/refimp.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
-    viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
+    altshap = viz_sequence.plot_weights(array=alt_scores, title=title1, filepath='static/images/app/altimp.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
+    refshap = viz_sequence.plot_weights(array=ref_scores, title=title2, filepath='static/images/app/refimp.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
+    delshap = viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
+    return altshap, refshap, delshap
+
+
 
 def shap_scores_main(cell_type, peaks_df, nc):
     # tf.compat.v1.disable_eager_execution()
@@ -155,7 +158,7 @@ def shap_scores_main(cell_type, peaks_df, nc):
     peaks_df['start'] = peaks_df['st'] + peaks_df['summit'] - (2114 // 2)
     peaks_df['end'] = peaks_df['st'] + peaks_df['summit'] + (2114 // 2)
     peaks_df2, sequences, scores = shap_scores(model, peaks_df)
-    gen_graphs(peaks_df2, sequences, scores)
+    return gen_graphs(peaks_df2, sequences, scores)
 
 if __name__ == '__main__':
     tf.compat.v1.disable_eager_execution()

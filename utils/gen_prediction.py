@@ -13,7 +13,6 @@ from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
 
 from PIL import Image
-from copy import deepcopy
 import base64
 import io
 

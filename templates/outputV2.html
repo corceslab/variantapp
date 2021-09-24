@@ -10,9 +10,9 @@
     <img id="picture" src="data:image/png;base64,{{ altpred }}" class="center">
     <img id="picture" src="data:image/png;base64,{{ refpred }}" class="center">
     <img id="picture" src="data:image/png;base64,{{ lfcpred }}" class="center">
-    <img src="../static/images/app/altimp.png" alt="Alt Importance" class="center">
-    <img src="../static/images/app/refimp.png" alt="Ref Importance" class="center">
-    <img src="../static/images/app/delta.png" alt="Delta Importance" class="center">
+    <img id="picture" src="data:image/png;base64,{{ altshap }}" class="center">
+    <img id="picture" src="data:image/png;base64,{{ refshap }}" class="center">
+    <img id="picture" src="data:image/png;base64,{{ delshap }}" class="center">
     {% block content %}
     {% include 'motifs.html' %}
     {% endblock %}
