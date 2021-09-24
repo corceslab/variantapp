@@ -27,9 +27,9 @@ def generate_output_rsID(cell_type, rsID, nc):
     peaks_df = query_rsID(rsID)
     altpred, refpred, lfcpred = predict_main(model, peaks_df)
     altshap, refshap, delshap = shap_scores_main(cell_type, peaks_df, nc)
-    get_motifs(peaks_df.iloc[0]['chrom'], peaks_df.iloc[0]['st'])
+    table = get_motifs(peaks_df.iloc[0]['chrom'], peaks_df.iloc[0]['st'])
     subprocess.call(['sh' ,'utils/export.sh'])
-    return altpred, refpred, lfcpred, altshap, refshap, delshap
+    return altpred, refpred, lfcpred, altshap, refshap, delshap, table
 
 if __name__ == '__main__':
     #generate_output_values('abc', 'chr1', 35641660, 'A', 'G')

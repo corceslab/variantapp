@@ -4,6 +4,7 @@ from flask import render_template
 from PIL import Image
 import base64
 import io
+from markupsafe import Markup
 
 from utils.form import form_values, form_rsID
 from utils.utils import generate_output_values, generate_output_rsID
@@ -25,9 +26,10 @@ def home():
         cell_type = request.form['cell_type']
         rsID = request.form['rsID']
         nc = request.form['nc']
-        altpred, refpred, lfcpred, altshap, refshap, delshap = generate_output_rsID(cell_type, rsID, nc)
+        altpred, refpred, lfcpred, altshap, refshap, delshap, table = generate_output_rsID(cell_type, rsID, nc)
+        motifs = Markup(table)
         return render_template('outputV2.html', altpred=altpred.decode('utf-8'), refpred=refpred.decode('utf-8'), lfcpred=lfcpred.decode('utf-8'), \
-            altshap=altshap.decode('utf-8'), refshap=refshap.decode('utf-8'), delshap=delshap.decode('utf-8'))
+            altshap=altshap.decode('utf-8'), refshap=refshap.decode('utf-8'), delshap=delshap.decode('utf-8'), motifs=motifs)
     return render_template('index_rsID.html', form=form)
 
 # def home():

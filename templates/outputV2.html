@@ -14,7 +14,7 @@
     <img id="picture" src="data:image/png;base64,{{ refshap }}" class="center">
     <img id="picture" src="data:image/png;base64,{{ delshap }}" class="center">
     {% block content %}
-    {% include 'motifs.html' %}
+    {{ motifs }}
     {% endblock %}
 
     <form method="get" action="/static/zip/exports.zip" class="centerbutton">
