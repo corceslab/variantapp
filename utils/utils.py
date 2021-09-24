@@ -1,10 +1,11 @@
-from basepairmodels.cli.shap import shap_scores
 import numpy as np
-from numpy.core.fromnumeric import _shape_dispatcher
 import pandas as pd
 import subprocess
 import tensorflow as tf
 import time
+
+from basepairmodels.cli.shap import shap_scores
+from numpy.core.fromnumeric import _shape_dispatcher
 
 from utils.load_model import load
 from utils.query_variant import query_rsID, query_values
@@ -24,10 +25,11 @@ def generate_output_rsID(cell_type, rsID, nc):
     subprocess.call(['sh' ,'utils/reset.sh'])
     model = load(cell_type, nc)
     peaks_df = query_rsID(rsID)
-    predict_main(model, peaks_df)
+    altpred, refpred, lfcpred = predict_main(model, peaks_df)
     shap_scores_main(cell_type, peaks_df, nc)
     get_motifs(peaks_df.iloc[0]['chrom'], peaks_df.iloc[0]['st'])
     subprocess.call(['sh' ,'utils/export.sh'])
+    return altpred, refpred, lfcpred
 
 if __name__ == '__main__':
     #generate_output_values('abc', 'chr1', 35641660, 'A', 'G')

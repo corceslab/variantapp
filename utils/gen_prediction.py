@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import pysam
+
 from basepairmodels.cli.losses import MultichannelMultinomialNLL
 from basepairmodels.cli.losses import multinomial_nll
 from tensorflow.keras.models import load_model
@@ -10,6 +11,11 @@ from mseqgen.sequtils import one_hot_encode
 from scipy.special import softmax
 from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
+
+from PIL import Image
+from copy import deepcopy
+import base64
+import io
 
 
 def insert_variant(seq, allele, position):
@@ -73,7 +79,18 @@ def gen_graphs(pred, title, filepath, minval, maxval):
     plt.plot(np.zeros(400), color="gray")
     currentAxis = plt.gca()
     currentAxis.add_patch(Rectangle((199 - .5, minval), 1, maxval-minval, facecolor="grey", alpha=0.5))
-    plt.savefig(filepath)
+    return fig_to_img(plt.gcf())
+    #plt.savefig(filepath)
+
+def fig_to_img(fig):
+    buf = io.BytesIO()
+    data = io.BytesIO()
+    fig.savefig(buf)
+    buf.seek(0)
+    img = Image.open(buf)
+    img.save(data, "PNG")
+    encoded_img_data = base64.b64encode(data.getvalue())
+    return encoded_img_data
 
 def log_full_change(ref_track, alt_track):
     ref_track = ref_track + 0.001
@@ -111,10 +128,11 @@ def predict_main(model, peaks_df):
     
     st, en = 300, 700
     minval, maxval = get_range(prediction1, prediction2, st, en)
-    gen_graphs(prediction1[st:en], 'Alternate Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/altpred.png', minval, maxval)
-    gen_graphs(prediction2[st:en], 'Reference Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/refpred.png', minval, maxval)
+    altpred = gen_graphs(prediction1[st:en], 'Alternate Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/altpred.png', minval, maxval)
+    refpred = gen_graphs(prediction2[st:en], 'Reference Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/refpred.png', minval, maxval)
+    lfcpred = gen_graphs(lfc[st:en], 'Log Full Change Graph [alt/ref]', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
     #gen_graphs(delta[st:en], 'Delta Prediction Graph', 'static/images/app/deltapred.png', minval, maxval)
-    gen_graphs(lfc[st:en], 'Log Full Change Graph [alt/ref]', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
+    return altpred, refpred, lfcpred
 
 if __name__ == '__main__':
     predict_main('../data/peaks/app.bed')
