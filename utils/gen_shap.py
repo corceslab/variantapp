@@ -8,6 +8,8 @@ import shap
 import tensorflow as tf
 import tensorflow_probability as tfp
 import time
+import io
+import csv
 
 from modisco.visualization import viz_sequence
 from basepairmodels.cli.bpnetutils import *
@@ -104,16 +106,29 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     ref_scores = get_imp(c_scores[1], c_seqs[1], start, end)
     delta_scores = alt_scores-ref_scores
 
-    with open("static/csv/data.csv", "ab") as f:
-        f.write(b"Reference Importance Scores: \n")
-        np.savetxt(f, alt_scores, delimiter=",")
-        f.write(b"\n")
-        f.write(b"Alternate Importance Scores: \n")
-        np.savetxt(f, ref_scores, delimiter=",")
-        f.write(b"\n")
-        f.write(b"Delta Importance Scores: \n")
-        np.savetxt(f, delta_scores, delimiter=",")
+    # with open("static/csv/data.csv", "ab") as f:
+    #     f.write(b"Alternate Importance Scores: \n")
+    #     np.savetxt(f, alt_scores, delimiter=",")
+    #     f.write(b"\n")
+    #     f.write(b"Reference Importance Scores: \n")
+    #     np.savetxt(f, ref_scores, delimiter=",")
+    #     f.write(b"\n")
+    #     f.write(b"Delta Importance Scores: \n")
+    #     np.savetxt(f, delta_scores, delimiter=",")
 
+    export = io.StringIO()
+    export.write("Alternate Importance Scores:\n")
+    csv.writer(export).writerows(alt_scores.tolist())
+    export.write("\n")
+    export.write("\n")
+    export.write("Reference Importance Scores:\n")
+    csv.writer(export).writerows(ref_scores.tolist())
+    export.write("\n")
+    export.write("\n")
+    export.write("Delta Importance Scores:\n")
+    csv.writer(export).writerows(delta_scores.tolist())
+    export.write("\n")
+    export.write("\n")
 
     alt_allele_seq = c_seqs[0][1056]
     alt = 'N'
@@ -144,7 +159,7 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     altshap = viz_sequence.plot_weights(array=alt_scores, title=title1, filepath='static/images/app/altimp.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
     refshap = viz_sequence.plot_weights(array=ref_scores, title=title2, filepath='static/images/app/refimp.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
     delshap = viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
-    return altshap, refshap, delshap
+    return altshap, refshap, delshap, export
 
 
 

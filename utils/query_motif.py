@@ -3,6 +3,9 @@ import subprocess
 import numpy as np
 import pandas as pd
 
+import csv
+import io
+
 def path_to_image_html(best_model):
     return '<img src="static/images/motifs/'+ best_model + '" style="max-height:100px;"/>'
 
@@ -34,13 +37,19 @@ def get_motifs(chrom, loc):
     </body>
     </html>
     '''
-    with open('static/csv/data.csv', 'a') as f:
-        motifs.to_csv(f, header=True, index=True)
+    export = io.StringIO()
+    export.write("Motifs Table:\n")
+    csv.writer(export).writerows(motifs.values.tolist())
+    export.write("\n")
+    export.write("\n")
+
+    # with open('static/csv/data.csv', 'a') as f:
+    #     motifs.to_csv(f, header=True, index=True)
     # with open('templates/motifs.html', 'w') as f: #../
     #     f.write(html_string.format(table=motifs.to_html(classes='mystyle', escape=False, formatters=dict(image=path_to_image_html), index=False)))
     s = html_string.format(table=motifs.to_html(classes='mystyle', escape=False, formatters=dict(image=path_to_image_html), index=False))
     #print(s)
-    return s
+    return s, export
 
 if __name__ == '__main__':
     get_motifs('chr3', 52498434)

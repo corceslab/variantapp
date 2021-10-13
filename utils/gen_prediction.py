@@ -15,6 +15,7 @@ from matplotlib.patches import Rectangle
 from PIL import Image
 import base64
 import io
+import csv
 
 
 def insert_variant(seq, allele, position):
@@ -114,16 +115,30 @@ def predict_main(model, peaks_df):
     #delta = np.subtract(prediction2, prediction1)
     lfc, lfcmin, lfcmax = log_full_change(prediction1, prediction2)
     
-    with open("static/csv/data.csv", "ab") as f:
-        f.write(b"Alternate Allele Prediction: \n")
-        np.savetxt(f, prediction1, delimiter=",")
-        f.write(b"\n")
-        f.write(b"Reference Allele Prediction: \n")
-        np.savetxt(f, prediction2, delimiter=",")
-        f.write(b"\n")
-        f.write(b"Log-Full-Change Prediction: \n")
-        np.savetxt(f, lfc, delimiter=",")
-        f.write(b"\n")
+    export = io.StringIO()
+    export.write("Alternate Allele Prediction:\n")
+    csv.writer(export).writerows(prediction1.tolist())
+    export.write("\n")
+    export.write("\n")
+    export.write("Reference Allele Prediction:\n")
+    csv.writer(export).writerows(prediction2.tolist())
+    export.write("\n")
+    export.write("\n")
+    export.write("Log-Full-Change Prediction:\n")
+    csv.writer(export).writerows(lfc.tolist())
+    export.write("\n")
+    export.write("\n")
+
+    # with open("static/csv/data.csv", "ab") as f:
+    #     f.write(b"Alternate Allele Prediction: \n")
+    #     np.savetxt(f, prediction1, delimiter=",")
+    #     f.write(b"\n")
+    #     f.write(b"Reference Allele Prediction: \n")
+    #     np.savetxt(f, prediction2, delimiter=",")
+    #     f.write(b"\n")
+    #     f.write(b"Log-Full-Change Prediction: \n")
+    #     np.savetxt(f, lfc, delimiter=",")
+    #     f.write(b"\n")
     
     st, en = 300, 700
     minval, maxval = get_range(prediction1, prediction2, st, en)
@@ -131,7 +146,7 @@ def predict_main(model, peaks_df):
     refpred = gen_graphs(prediction2[st:en], 'Reference Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/refpred.png', minval, maxval)
     lfcpred = gen_graphs(lfc[st:en], 'Log Full Change Graph [alt/ref]', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
     #gen_graphs(delta[st:en], 'Delta Prediction Graph', 'static/images/app/deltapred.png', minval, maxval)
-    return altpred, refpred, lfcpred
+    return altpred, refpred, lfcpred, export
 
 if __name__ == '__main__':
     predict_main('../data/peaks/app.bed')

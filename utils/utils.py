@@ -3,6 +3,7 @@ import pandas as pd
 import subprocess
 import tensorflow as tf
 import time
+import io
 
 from basepairmodels.cli.shap import shap_scores
 from numpy.core.fromnumeric import _shape_dispatcher
@@ -25,11 +26,15 @@ def generate_output_rsID(cell_type, rsID, nc):
     subprocess.call(['sh' ,'utils/reset.sh'])
     model = load(cell_type, nc)
     peaks_df = query_rsID(rsID)
-    altpred, refpred, lfcpred = predict_main(model, peaks_df)
-    altshap, refshap, delshap = shap_scores_main(cell_type, peaks_df, nc)
-    table = get_motifs(peaks_df.iloc[0]['chrom'], peaks_df.iloc[0]['st'])
-    subprocess.call(['sh' ,'utils/export.sh'])
-    return altpred, refpred, lfcpred, altshap, refshap, delshap, table
+    altpred, refpred, lfcpred, predexport = predict_main(model, peaks_df)
+    altshap, refshap, delshap, shapexport = shap_scores_main(cell_type, peaks_df, nc)
+    table, motifexport = get_motifs(peaks_df.iloc[0]['chrom'], peaks_df.iloc[0]['st'])
+    #subprocess.call(['sh' ,'utils/export.sh'])
+    export = io.StringIO()
+    export.write(predexport.getvalue())
+    export.write(shapexport.getvalue())
+    export.write(motifexport.getvalue())
+    return altpred, refpred, lfcpred, altshap, refshap, delshap, table, export
 
 if __name__ == '__main__':
     #generate_output_values('abc', 'chr1', 35641660, 'A', 'G')

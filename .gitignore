@@ -3,3 +3,4 @@
 *.pyc
 data/tracks/C24_track.bw
 *.ipynb
+static/zip/*
