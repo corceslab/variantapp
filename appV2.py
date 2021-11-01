@@ -35,8 +35,10 @@ def home():
         #     shutil.copyfileobj(export, f)
         # return render_template('outputV2.html', altpred=altpred.decode('utf-8'), refpred=refpred.decode('utf-8'), lfcpred=lfcpred.decode('utf-8'), \
         #     altshap=altshap.decode('utf-8'), refshap=refshap.decode('utf-8'), delshap=delshap.decode('utf-8'), motifs=motifs)
-        graphs, motiftable = generate_output_rsID(cell_type, rsID, nc)
-        motifs = Markup(motiftable)
+        #graphs, motiftable = generate_output_rsID(cell_type, rsID, nc)
+        #motifs = Markup(motiftable)
+        graphs, table = generate_output_rsID(cell_type, rsID, nc)
+        motifs = Markup(table)
         return render_template('outputV2.html', graphs=graphs.decode('utf-8'), motifs=motifs)
     return render_template('index_rsID.html', form=form)
 

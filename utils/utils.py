@@ -16,6 +16,13 @@ from utils.gen_prediction import predict_main
 from utils.gen_shap import shap_scores_main
 from utils.query_motif import get_motifs
 
+# from load_model import load
+# from query_variant import query_rsID, query_values
+# from gen_prediction import predict_main
+# from gen_shap import shap_scores_main
+# from query_motif import get_motifs
+
+
 def generate_output_values(cell_type, chrom, position, alt_allele, ref_allele):
     subprocess.call(['sh' ,'utils/reset.sh'])
     model = load(cell_type)
@@ -26,13 +33,16 @@ def generate_output_values(cell_type, chrom, position, alt_allele, ref_allele):
 
 def generate_output_rsID(cell_type, rsID, nc):
     subprocess.call(['sh' ,'utils/reset.sh'])
-    model = load(cell_type, nc)
+    # model = load(cell_type, nc)
     peaks_df = query_rsID(rsID)
     export = io.StringIO()
     images = []
     for i, g in peaks_df.groupby(peaks_df.index // 2):
+        model = load(cell_type, nc)
         altpred, refpred, lfcpred, predexport = predict_main(model, g)
-        altshap, refshap, delshap, shapexport = shap_scores_main(cell_type, peaks_df, nc)
+        print("prediction: ", i)
+        altshap, refshap, delshap, shapexport = shap_scores_main(cell_type, g, nc)
+        print("importance scores: ", i)
         export.write(predexport.getvalue())
         export.write(shapexport.getvalue())
         p1 = Image.open(io.BytesIO(base64.b64decode(altpred)))
@@ -52,13 +62,23 @@ def generate_output_rsID(cell_type, rsID, nc):
         variant.paste(s3, (0, p1.height + p2.height + p3.height+ s1.height+ s2.height))
         images.append(variant)
     
-    table, motifexport = get_motifs(peaks_df.iloc[0]['chrom'], peaks_df.iloc[0]['st'])
-    #table, motifexport = get_motifs(peaks_df)
-    #export.write(motifexport.getvalue())
+    # table, motifexport = get_motifs(peaks_df.iloc[0]['chrom'], peaks_df.iloc[0]['st'])
+    table, motifexport = get_motifs(peaks_df)
+    export.write(motifexport.getvalue())
 
     encoded = io.BytesIO()
+    width = 3000
+    height = 0
     for image in images:
-        image.save(encoded, format="PNG")
+        height += image.height
+    print (width, height)
+    export_image = Image.new('RGB', (width, height))
+    curheight = 0
+    for image in images:
+        export_image.paste(image, (0, curheight))
+        curheight += image.height
+    export_image.save(encoded, format="PNG")
+    #export_image.save('img.png')
     encoded_img_data = base64.b64encode(encoded.getvalue())
 
 
@@ -69,4 +89,4 @@ def generate_output_rsID(cell_type, rsID, nc):
 
 if __name__ == '__main__':
     #generate_output_values('abc', 'chr1', 35641660, 'A', 'G')
-    generate_output_rsID('C24', 'rs181391313')
+    generate_output_rsID('C24', 'rs181391313, rs636317', '00')

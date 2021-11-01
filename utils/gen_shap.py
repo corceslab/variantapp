@@ -22,6 +22,7 @@ from tensorflow import compat
 from tensorflow.keras.models import load_model
 
 from utils.load_model import load
+# from load_model import load
 
 
 def insert_variant(seq, allele, position):
