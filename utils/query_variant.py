@@ -9,22 +9,23 @@ def add_variant(df, chromosome, position, allele):
 
 def query_rsID(rsID):
     mv = myvariant.MyVariantInfo()
-    rsID_info = mv.query('dbsnp.rsid:'+rsID, fields='vcf', assembly='hg38')
-    hits = rsID_info['hits']
-    data = hits[0]
-    #print("data _id:", data['_id'])
-    chrom = data['_id'].split(':')[0]
-    #print("chrom:", chrom)
-    vcf = data['vcf']
-    position = int(vcf['position'])
-    alt_allele = vcf['alt']
-    ref_allele = vcf['ref']
-    print("alt:", alt_allele)
-    print("ref:", ref_allele)
+    rsIDs = rsID.split(", ")
     var_df = pd.DataFrame(columns = ['chrom', 'st', 'allele'])
-    # alt is the first row, ref is the second row
-    var_df = add_variant(var_df, chrom, position, alt_allele)
-    var_df = add_variant(var_df, chrom, position, ref_allele)
+    for id in rsIDs:
+        rsID_info = mv.query('dbsnp.rsid:'+id, fields='vcf', assembly='hg38')
+        hits = rsID_info['hits']
+        data = hits[0]
+        chrom = data['_id'].split(':')[0]
+        vcf = data['vcf']
+        position = int(vcf['position'])
+        alt_allele = vcf['alt']
+        ref_allele = vcf['ref']
+        print("alt:", alt_allele)
+        print("ref:", ref_allele)
+        # alt alleles are in even rows (2k), ref alleles are in odd rows (1+2k)
+        var_df = add_variant(var_df, chrom, position, alt_allele)
+        var_df = add_variant(var_df, chrom, position, ref_allele)
+
     var_df['summit'] = 0
     var_df['signalValue'] = 10
     var_df['start'] = var_df['st'] + var_df['summit'] - (2114 // 2)
