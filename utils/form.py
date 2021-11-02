@@ -25,6 +25,6 @@ class form_rsID(Form):
         ('C12 - Striatal Inhibitory (minor)'), ('C13 - Astrocytes (unclassified)'), ('C14 - Nigral Astrocytes'), ('C15 - Isocortical Astrocytes'), ('C16 - Striatal Astrocytes'), \
         ('C17 - Astrocytes (unclassified)'), ('C18 - Potential Doublets'), ('C19 - Oligodendrocytes'), ('C20 - Oligodendrocytes'), ('C21 - Oligodendrocytes'), ('C22 - Oligodendrocytes'), \
         ('C23 - Oligodendrocytes'), ('C24 - Microglia') ])
-    rsID = TextField("Enter the variant's rsID (e.g. rs1237999):", validators=[validators.InputRequired()])
-    nc = SelectField(u'Negative Sampling', choices=[("00"), ("02"), ("03"), ("05"), ("10"), ("20"), ("50")])
+    rsID = TextField("Variant rsID List", validators=[validators.InputRequired()])
+    nc = SelectField(u'Negative Sampling Ratio', choices=[("00"), ("02"), ("03"), ("05"), ("10"), ("20"), ("50")])
     submit = SubmitField("Submit")

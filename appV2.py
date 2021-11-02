@@ -39,8 +39,8 @@ def home():
         #motifs = Markup(motiftable)
         graphs, table = generate_output_rsID(cell_type, rsID, nc)
         motifs = Markup(table)
-        return render_template('outputV2.html', graphs=graphs.decode('utf-8'), motifs=motifs)
-    return render_template('index_rsID.html', form=form)
+        return render_template('outputV3.html', graphs=graphs.decode('utf-8'), motifs=motifs)
+    return render_template('indexV3.html', form=form)
 
 # def home():
 #     """Home page of app with form"""

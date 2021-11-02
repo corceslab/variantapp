@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+    <br>
+    <h1><center>Model Output</center></h1>
+    <br>
+    <img id="picture" src="data:image/png;base64,{{ graphs }}" class="center">
+    <!-- <div class="center">
+        <img id="picture" src="data:image/png;base64,{{ graphs }}">
+    </div> -->
+    {{ motifs }}
+</div>
+    
+{% endblock %}
