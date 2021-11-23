@@ -102,18 +102,27 @@ li a {
     padding: 12px 15px;
     text-decoration: none;
 }
-li b {
+.b {
   display: block;
     color:black;
     text-align: center;
     padding: 7px 10px;
     text-decoration: none;
 }
-li c {
+.c {
   display: block;
     color:black;
     text-align: center;
     padding: 13px 5px;
+    text-decoration: none;
+}
+.d {
+  font-family: Montserrat;  
+  font-weight: 400;
+  display: block;
+    color:black;
+    text-align: center;
+    padding: 12px 8px;
     text-decoration: none;
 }
 /* Change the link color to #111 (black) on hover */

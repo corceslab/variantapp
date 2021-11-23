@@ -10,6 +10,10 @@ import base64
 from basepairmodels.cli.shap import shap_scores
 from numpy.core.fromnumeric import _shape_dispatcher
 
+from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
+
 from utils.load_model import load
 from utils.query_variant import query_rsID, query_values
 from utils.gen_prediction import predict_main
@@ -70,13 +74,32 @@ def generate_output_rsID(cell_type, rsID, nc):
     width = 3000
     height = 0
     for image in images:
-        height += image.height
+        height += (image.height+100)
     print (width, height)
-    export_image = Image.new('RGB', (width, height))
+    export_image = Image.new('RGB', (width, height), (255, 255, 255))
     curheight = 0
-    for image in images:
-        export_image.paste(image, (0, curheight))
-        curheight += image.height
+    rsIDs = rsID.split(", ")
+    for i in range(len(images)):
+        # whitebg = Image.new('RGB', (width, 100), (255, 255, 255))
+        # export_image.paste(whitebg, (0, curheight))
+        I1 = ImageDraw.Draw(export_image)
+        roboto = ImageFont.truetype('static/ttf/Roboto-BoldItalic.ttf', 50)
+        w, h = I1.textsize(rsIDs[i], font=roboto)
+        I1.text(((width-w)/2, curheight+50), rsIDs[i], font=roboto, fill =(0, 0, 0))
+        curheight+=130
+        export_image.paste(images[i], (-40, curheight))
+        curheight += images[i].height
+    # for image in images:
+    #     whitebg = Image.new('RGB', (width, 100), (255, 255, 255))
+    #     export_image.paste(whitebg, (0, curheight))
+    #     I1 = ImageDraw.Draw(export_image)
+    #     roboto = ImageFont.truetype('static/ttf/Roboto-Thin.ttf', 50)
+    #     w, h = I1.textsize(rsID, font=roboto)
+    #     I1.text(((width-w)/2+40, curheight+20), rsID, font=roboto, fill =(0, 0, 0))
+    #     curheight+=100
+    #     export_image.paste(image, (0, curheight))
+    #     curheight += image.height
+        
     export_image.save(encoded, format="PNG")
     #export_image.save('img.png')
     encoded_img_data = base64.b64encode(encoded.getvalue())
