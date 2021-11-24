@@ -17,7 +17,7 @@ def get_motifs(peaks_df):
     #print(input_chrom, input_loc)
     # query = "\'" + str(chrom) + '\:' + str(loc) + '\-' + str(loc) + "\'"
     #print('Querying motifs from Vierstra')
-    motifs_main = pd.DataFrame(columns = ['chromosome', 'start', 'end', 'motif_cluster', 'match_score', 'strand', 'best_model', 'num_models'])
+    motifs_main = pd.DataFrame(columns = ['variant', 'chromosome', 'start', 'end', 'motif_cluster', 'match_score', 'strand', 'best_model', 'num_models'])
     for i, g in peaks_df.groupby(peaks_df.index // 2):
         input_chrom = str(g.iloc[0]['chrom'])
         input_loc = str(g.iloc[0]['st'])
@@ -31,6 +31,7 @@ def get_motifs(peaks_df):
         #print(motifs.info())
         motifs = motifs.sort_values(by=['match_score'], ascending=False)
         motifs['image'] = motifs['best_model'] + '.png'
+        motifs.insert(0, 'new-col', g)
         motifs_main = motifs_main.append(motifs)
     #motifs.to_html(open('../templates/motifs.html', 'w'))
     html_string = '''
@@ -55,6 +56,26 @@ def get_motifs(peaks_df):
     s = html_string.format(table=motifs_main.to_html(classes='mystyle', escape=False, formatters=dict(image=path_to_image_html), index=False))
     #print(s)
     return s, export
+
+def get_motif(input_chrom, input_loc):
+    motifs_main = pd.DataFrame(columns = ['chromosome', 'start', 'end', 'motif_cluster', 'match_score', 'strand', 'best_model', 'num_models'])
+    subprocess.call(['sh', 'utils/query_motif.sh', '-c', input_chrom, '-l', input_loc])
+    motifs=pd.read_csv('static/text/motifs.txt', sep='\t', header=None, names=['chromosome', 'start', 'end', 'motif_cluster', 'match_score', 'strand', 'best_model', 'num_models']) #../
+    motifs = motifs.sort_values(by=['match_score'], ascending=False)
+    motifs['image'] = motifs['best_model'] + '.png'
+    motifs_main = motifs_main.append(motifs)
+    html_string = '''
+    <html>
+    <head><title>HTML Motifs Dataframe with CSS</title></head>
+    <link rel="stylesheet" type="text/css" href="/static/css/df_style.css"/>
+    <body>
+        {table}
+    </body>
+    </html>
+    '''
+
+    s = html_string.format(table=motifs_main.to_html(classes='mystyle', escape=False, formatters=dict(image=path_to_image_html), index=False))
+    return s
 
 if __name__ == '__main__':
     get_motifs('chr3', 52498434)

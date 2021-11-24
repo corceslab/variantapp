@@ -18,7 +18,7 @@ from utils.load_model import load
 from utils.query_variant import query_rsID, query_values
 from utils.gen_prediction import predict_main
 from utils.gen_shap import shap_scores_main
-from utils.query_motif import get_motifs
+from utils.query_motif import get_motifs, get_motif
 
 # from load_model import load
 # from query_variant import query_rsID, query_values
@@ -66,49 +66,70 @@ def generate_output_rsID(cell_type, rsID, nc):
         variant.paste(s3, (0, p1.height + p2.height + p3.height+ s1.height+ s2.height))
         images.append(variant)
     
-    # table, motifexport = get_motifs(peaks_df.iloc[0]['chrom'], peaks_df.iloc[0]['st'])
-    table, motifexport = get_motifs(peaks_df)
-    export.write(motifexport.getvalue())
+    motiftables = []
+    for i, g in peaks_df.groupby(peaks_df.index // 2):
+        input_chrom = str(g.iloc[0]['chrom'])
+        input_loc = str(g.iloc[0]['st'])
+        motiftables.append(get_motif(input_chrom, input_loc))
+    
+    # table, motifexport = get_motifs(peaks_df)
+    # export.write(motifexport.getvalue())
 
     encoded = io.BytesIO()
     width = 3000
     height = 0
-    for image in images:
-        height += (image.height+100)
+    # for image in images:
+    #     height += (image.height+100)
     print (width, height)
     export_image = Image.new('RGB', (width, height), (255, 255, 255))
     curheight = 0
     rsIDs = rsID.split(", ")
+    print(rsIDs)
+    print(rsIDs[0], rsIDs[1])
+    export_images = []
     for i in range(len(images)):
-        # whitebg = Image.new('RGB', (width, 100), (255, 255, 255))
-        # export_image.paste(whitebg, (0, curheight))
+        width = 3000
+        height = 2230
+        export_image = Image.new('RGB', (width, height), (255, 255, 255))
         I1 = ImageDraw.Draw(export_image)
         roboto = ImageFont.truetype('static/ttf/Roboto-BoldItalic.ttf', 50)
         w, h = I1.textsize(rsIDs[i], font=roboto)
-        I1.text(((width-w)/2, curheight+50), rsIDs[i], font=roboto, fill =(0, 0, 0))
-        curheight+=130
-        export_image.paste(images[i], (-40, curheight))
-        curheight += images[i].height
-    # for image in images:
-    #     whitebg = Image.new('RGB', (width, 100), (255, 255, 255))
-    #     export_image.paste(whitebg, (0, curheight))
+        I1.text(((width-w)/2, 50), rsIDs[i], font=roboto, fill =(0, 0, 0))
+        export_image.paste(images[i], (-40, 130))
+        export_image.save(encoded, format="PNG")
+        export_images.append(base64.b64encode(encoded.getvalue()))
+
+    # for i in range(len(images)):
+    #     # whitebg = Image.new('RGB', (width, 100), (255, 255, 255))
+    #     # export_image.paste(whitebg, (0, curheight))
     #     I1 = ImageDraw.Draw(export_image)
-    #     roboto = ImageFont.truetype('static/ttf/Roboto-Thin.ttf', 50)
-    #     w, h = I1.textsize(rsID, font=roboto)
-    #     I1.text(((width-w)/2+40, curheight+20), rsID, font=roboto, fill =(0, 0, 0))
-    #     curheight+=100
-    #     export_image.paste(image, (0, curheight))
-    #     curheight += image.height
+    #     roboto = ImageFont.truetype('static/ttf/Roboto-BoldItalic.ttf', 50)
+    #     w, h = I1.textsize(rsIDs[i], font=roboto)
+    #     I1.text(((width-w)/2, curheight+50), rsIDs[i], font=roboto, fill =(0, 0, 0))
+    #     curheight+=130
+    #     export_image.paste(images[i], (-40, curheight))
+    #     curheight += images[i].height
+    # # for image in images:
+    # #     whitebg = Image.new('RGB', (width, 100), (255, 255, 255))
+    # #     export_image.paste(whitebg, (0, curheight))
+    # #     I1 = ImageDraw.Draw(export_image)
+    # #     roboto = ImageFont.truetype('static/ttf/Roboto-Thin.ttf', 50)
+    # #     w, h = I1.textsize(rsID, font=roboto)
+    # #     I1.text(((width-w)/2+40, curheight+20), rsID, font=roboto, fill =(0, 0, 0))
+    # #     curheight+=100
+    # #     export_image.paste(image, (0, curheight))
+    # #     curheight += image.height
         
-    export_image.save(encoded, format="PNG")
-    #export_image.save('img.png')
-    encoded_img_data = base64.b64encode(encoded.getvalue())
+    # export_image.save(encoded, format="PNG")
+    # #export_image.save('img.png')
+    # encoded_img_data = base64.b64encode(encoded.getvalue())
 
 
     #subprocess.call(['sh' ,'utils/export.sh'])
     
     # return encoded_img_data, refpred, lfcpred, altshap, refshap, delshap, table, export
-    return encoded_img_data, table
+    # return encoded_img_data, table
+    return export_images, motiftables
 
 if __name__ == '__main__':
     #generate_output_values('abc', 'chr1', 35641660, 'A', 'G')

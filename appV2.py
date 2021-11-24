@@ -37,9 +37,13 @@ def home():
         #     altshap=altshap.decode('utf-8'), refshap=refshap.decode('utf-8'), delshap=delshap.decode('utf-8'), motifs=motifs)
         #graphs, motiftable = generate_output_rsID(cell_type, rsID, nc)
         #motifs = Markup(motiftable)
-        graphs, table = generate_output_rsID(cell_type, rsID, nc)
-        motifs = Markup(table)
-        return render_template('outputV3.html', graphs=graphs.decode('utf-8'), motifs=motifs)
+        motifs = []
+        graphs, tables = generate_output_rsID(cell_type, rsID, nc)
+        for i in range(len(graphs)):
+            graphs[i] = graphs[i].decode('utf-8')
+        for table in tables:
+            motifs.append(Markup(table))
+        return render_template('outputV3.html', zip=zip(graphs, motifs))
     return render_template('indexV3.html', form=form)
 
 # def home():

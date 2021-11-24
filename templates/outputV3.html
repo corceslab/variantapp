@@ -2,11 +2,14 @@
 {% block content %}
     <br>
     <h1><center>Model Output</center></h1>
-    <img id="picture" src="data:image/png;base64,{{ graphs }}" class="center">
-    <!-- <div class="center">
-        <img id="picture" src="data:image/png;base64,{{ graphs }}">
-    </div> -->
-    <br>
+
+    {% for graph,table in zip %}
+        <img id="picture" src="data:image/png;base64,{{ graph }}" class="center">
+        <br>
+        {{ table }}
+        <br>
+        <br>
+    {% endfor %}
     {{ motifs }}
 </div>
     
