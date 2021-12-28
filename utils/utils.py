@@ -19,6 +19,7 @@ from utils.query_variant import query_rsID, query_values
 from utils.gen_prediction import predict_main
 from utils.gen_shap import shap_scores_main
 from utils.query_motif import get_motifs, get_motif
+from utils.scoring import gen_score
 
 # from load_model import load
 # from query_variant import query_rsID, query_values
@@ -38,6 +39,7 @@ def generate_output_values(cell_type, chrom, position, alt_allele, ref_allele):
 def generate_output_rsID(cell_type, rsID, nc):
     subprocess.call(['sh' ,'utils/reset.sh'])
     peaks_df = query_rsID(rsID)
+    print(peaks_df)
     export = io.StringIO()
     images = []
     for i, g in peaks_df.groupby(peaks_df.index // 2):
@@ -89,6 +91,14 @@ def generate_output_rsID(cell_type, rsID, nc):
         export_images.append(base64.b64encode(encoded.getvalue()))
 
     return export_images, motiftables
+
+def generate_output_ranking(cell_type, rsID, nc):
+    variant_names = rsID.split(", ")
+    peaks_df = query_rsID(rsID)
+    print("peaks_df:\n", peaks_df)
+    model = load(cell_type, nc)
+    gen_score(model, peaks_df, variant_names)
+
 
 if __name__ == '__main__':
     #generate_output_values('abc', 'chr1', 35641660, 'A', 'G')
