@@ -88,4 +88,4 @@ def gen_score(model, peaks_df, variant_names):
     output['lfc'] = lfc
     output['d_lfc'] = d_lfc
     output = output.sort_values('d_lfc', ascending=False)
-    print(output)
+    return output

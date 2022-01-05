@@ -94,10 +94,12 @@ def generate_output_rsID(cell_type, rsID, nc):
 
 def generate_output_ranking(cell_type, rsID, nc):
     variant_names = rsID.split(", ")
+    print(variant_names)
     peaks_df = query_rsID(rsID)
     print("peaks_df:\n", peaks_df)
     model = load(cell_type, nc)
-    gen_score(model, peaks_df, variant_names)
+    lfcscores = gen_score(model, peaks_df, variant_names)
+    return lfcscores
 
 
 if __name__ == '__main__':

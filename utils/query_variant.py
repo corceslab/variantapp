@@ -12,6 +12,7 @@ def query_rsID(rsID):
     rsIDs = rsID.split(", ")
     var_df = pd.DataFrame(columns = ['chrom', 'st', 'allele'])
     for id in rsIDs:
+        print("querying: ", id)
         rsID_info = mv.query('dbsnp.rsid:'+id, fields='vcf', assembly='hg38')
         hits = rsID_info['hits']
         data = hits[0]
@@ -20,8 +21,8 @@ def query_rsID(rsID):
         position = int(vcf['position'])
         alt_allele = vcf['alt']
         ref_allele = vcf['ref']
-        print("alt:", alt_allele)
-        print("ref:", ref_allele)
+        # print("alt:", alt_allele)
+        # print("ref:", ref_allele)
         # alt alleles are in even rows (2k), ref alleles are in odd rows (1+2k)
         var_df = add_variant(var_df, chrom, position, alt_allele)
         var_df = add_variant(var_df, chrom, position, ref_allele)
