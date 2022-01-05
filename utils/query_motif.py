@@ -63,6 +63,7 @@ def get_motif(input_chrom, input_loc):
     motifs=pd.read_csv('static/text/motifs.txt', sep='\t', header=None, names=['chromosome', 'start', 'end', 'motif_cluster', 'match_score', 'strand', 'best_model', 'num_models']) #../
     motifs = motifs.sort_values(by=['match_score'], ascending=False)
     motifs['image'] = motifs['best_model'] + '.png'
+    motifs = motifs[motifs['match_score']>8]
     motifs_main = motifs_main.append(motifs)
     html_string = '''
     <html>
