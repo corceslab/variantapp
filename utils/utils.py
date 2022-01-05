@@ -92,7 +92,7 @@ def generate_output_rsID(cell_type, rsID, nc):
 
     return export_images, motiftables
 
-def generate_output_ranking(cell_type, rsID, nc):
+def generate_lfc_ranking(cell_type, rsID, nc):
     variant_names = rsID.split(", ")
     print(variant_names)
     peaks_df = query_rsID(rsID)
