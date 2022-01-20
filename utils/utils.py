@@ -17,9 +17,10 @@ from PIL import ImageFont
 from utils.load_model import load
 from utils.query_variant import query_rsID, query_values
 from utils.gen_prediction import predict_main
-from utils.gen_shap import shap_scores_main
+from utils.gen_shap import shap_scores_main, insert_variant
 from utils.query_motif import get_motifs, get_motif
-from utils.scoring import gen_score
+from utils.scoring import gen_score, gen_importance
+
 
 # from load_model import load
 # from query_variant import query_rsID, query_values
@@ -101,6 +102,11 @@ def generate_lfc_ranking(cell_type, rsID, nc):
     lfcscores = gen_score(model, peaks_df, variant_names)
     return lfcscores
 
+def generate_explain_score(cell_type, rsID, nc):
+    variant_names = rsID.split(", ")
+    peaks_df = query_rsID(rsID)
+    explain_score = gen_importance(cell_type, nc, peaks_df, variant_names)
+    return explain_score
 
 if __name__ == '__main__':
     #generate_output_values('abc', 'chr1', 35641660, 'A', 'G')

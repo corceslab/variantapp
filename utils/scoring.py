@@ -3,9 +3,17 @@ import pandas as pd
 import tensorflow as tf
 import pysam
 import math
+import shap
 
 from mseqgen.sequtils import one_hot_encode
 from scipy.special import softmax
+
+from utils.load_model import load
+from deeplift.dinuc_shuffle import dinuc_shuffle
+from basepairmodels.cli.bpnetutils import *
+from basepairmodels.cli.shaputils import *
+
+
 
 def insert_variant(seq, allele, position):
     left, right = seq[:position-1], seq[position:]
@@ -42,6 +50,8 @@ def sc_lfc(ref_track, alt_track):
     alt = sum(alt_track)
     lfc = math.log(alt / ref)
     return lfc
+
+
 
 def gen_score(model, peaks_df, variant_names):
 
@@ -88,4 +98,56 @@ def gen_score(model, peaks_df, variant_names):
     output['lfc'] = lfc
     output['d_lfc'] = d_lfc
     
+    return output
+
+def shuffle_seq(seq):
+    return dinuc_shuffle(seq, 100)
+
+def gen_importance(cell_type, nc, peaks_df, variant_names):
+    fasta_ref = pysam.FastaFile('reference/hg38.genome.fa')
+    num_peaks = peaks_df.shape[0]*50
+    bias_counts_input = np.zeros((num_peaks, 1))
+    bias_profile_input = np.zeros((num_peaks, 1000, 2))
+
+    tf.compat.v1.disable_eager_execution()
+    model = load(cell_type, nc)
+
+    sequences = []
+    peak_loc = 1057
+
+    for idx, row in peaks_df.groupby(peaks_df.index // 2):
+        seq = fasta_ref.fetch(row['chrom'].iloc[0], row['start'].iloc[0], row['end'].iloc[0]).upper()
+        alt_allele = row['allele'].iloc[0]
+        ref_allele = row['allele'].iloc[0]
+        shuffled_seqs = shuffle_seq(seq)
+        #print(shuffled_seqs)
+        for seq in shuffled_seqs:
+            sequences.append(insert_variant(seq, alt_allele, peak_loc))
+            sequences.append(insert_variant(seq, ref_allele, peak_loc))
+    
+    X = one_hot_encode(sequences, 2114)
+    print("X shape", X.shape)
+
+    def data_func(model_inputs):
+        rng = np.random.RandomState()
+        return [dinuc_shuffle(model_inputs[0], 20, rng)] + \
+        [
+            np.tile(
+                np.zeros_like(model_inputs[i]),
+                (20,) + (len(model_inputs[i].shape) * (1,))
+            ) for i in range(1, len(model_inputs))
+        ]
+    
+    # shap explainer for the counts head
+    profile_model_counts_explainer = shap.explainers.deep.TFDeepExplainer(
+        ([model.input[0], model.input[1]], 
+         tf.reduce_sum(model.outputs[1], axis=-1)),
+        data_func, 
+        combine_mult_and_diffref=combine_mult_and_diffref)
+
+    counts_shap_scores = profile_model_counts_explainer.shap_values(
+        [X, bias_counts_input], progress_message=10)
+    print(counts_shap_scores)
+    output = pd.DataFrame()
+    output['rsID'] = variant_names
     return output
