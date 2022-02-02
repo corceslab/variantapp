@@ -20,7 +20,7 @@ from tensorflow import compat
 
 if __name__ == '__main__':
     cluster = '24'
-    nc = '10'
+    nc = '20'
 
     vars_df = load_variants()
     print(vars_df.info())
@@ -47,7 +47,10 @@ if __name__ == '__main__':
     scores_df = filtered_vars_df
     scores_df['lfc'] = lfc_scores['lfc']
     scores_df['d_lfc'] = lfc_scores['d_lfc']
-    scores_df = scores_df.sort_values('d_lfc', ascending=False)
+    scores_df['jsd'] = lfc_scores['jsd']
+    scores_df = scores_df.sort_values(by=['d_lfc', 'jsd'], ascending=[False, False])
     print(scores_df)
+    # scores_df = scores_df.sort_values('jsd', ascending=False)
+    # print(scores_df)
     # generate_explain_score('C' + cluster, rsIDs, nc)
     vars_df.to_csv('data/output/ADPD_SNPs_score.csv')

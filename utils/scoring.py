@@ -107,7 +107,7 @@ def gen_score(model, peaks_df, variant_names):
     return output
 
 def shuffle_seq(seq):
-    return dinuc_shuffle(seq, 50)
+    return dinuc_shuffle(seq, 10)
 
 def gen_importance(cell_type, nc, peaks_df, variant_names):
     fasta_ref = pysam.FastaFile('reference/hg38.genome.fa')
@@ -152,7 +152,7 @@ def gen_importance(cell_type, nc, peaks_df, variant_names):
     print(type(dist_counts))
     dist_counts = np.sort(dist_counts[:, 0])
     print("dist_counts: ", dist_counts, dist_counts.size)
-    cutoff = dist_counts[int(dist_counts.size/5)]
+    cutoff = dist_counts[int(dist_counts.size/10)]
     print(cutoff)
 
     #variant prediction
@@ -169,14 +169,21 @@ def gen_importance(cell_type, nc, peaks_df, variant_names):
     #get lfc score
     lfc = []
     d_lfc = []
+    jsd = []
+    profiles = softmax(pred_logits)
+    print(profiles.shape)
+    # print("jsd:", jensenshannon(profiles[0], profiles[1]))
     for i in range(numseq // 2):
         lfc.append(sc_lfc(preds[2 * i], preds[2 * i + 1], cutoff))
         d_lfc.append(abs(lfc[i]))
+        jsd.append(jensenshannon(profiles[2 * i], profiles[2 * i + 1])[0])
+    print("jsd: ", jsd)
 
     output = pd.DataFrame()
     output['rsID'] = variant_names
     output['lfc'] = lfc
     output['d_lfc'] = d_lfc
+    output['jsd'] = jsd
 
     return output
 
