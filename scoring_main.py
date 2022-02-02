@@ -41,7 +41,7 @@ if __name__ == '__main__':
             rsIDs += rsID[0] + ", "
     rsIDs = rsIDs[:-2]
     print(rsIDs)
-    lfc_scores = generate_lfc_ranking('C' + cluster, rsIDs, nc)
+    lfc_scores = generate_explain_score('C' + cluster, rsIDs, nc)
     lfc_scores.reset_index(drop=True, inplace=True)
     print(lfc_scores)
     scores_df = filtered_vars_df
@@ -49,5 +49,5 @@ if __name__ == '__main__':
     scores_df['d_lfc'] = lfc_scores['d_lfc']
     scores_df = scores_df.sort_values('d_lfc', ascending=False)
     print(scores_df)
-    generate_explain_score('C' + cluster, rsIDs, nc)
+    # generate_explain_score('C' + cluster, rsIDs, nc)
     vars_df.to_csv('data/output/ADPD_SNPs_score.csv')
