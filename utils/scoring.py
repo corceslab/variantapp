@@ -56,7 +56,7 @@ def sc_lfc(ref_track, alt_track, cutoff):
     # print("alt: ",alt)
     lfc = math.log(alt / ref)
     # print("lfc: ",lfc)
-    return lfc
+    return lfc, ref, alt
 
 
 def gen_score(model, peaks_df, variant_names):
@@ -94,14 +94,21 @@ def gen_score(model, peaks_df, variant_names):
 
     #get lfc score
     lfc = []
+    alts = []
+    refs = []
     d_lfc = []
     for i in range(numseq // 2):
-        lfc.append(sc_lfc(preds[2 * i], preds[2 * i + 1]))
+        out_lfc, out_alt, out_ref = sc_lfc(preds[2 * i], preds[2 * i + 1])
+        lfc.append(lfc)
+        alts.append(out_alt)
+        refs.append(out_ref)
         d_lfc.append(abs(lfc[i]))
 
     output = pd.DataFrame()
     output['rsID'] = variant_names
     output['lfc'] = lfc
+    output['alts'] = alts
+    output['refs'] = refs
     output['d_lfc'] = d_lfc
     
     return output
@@ -174,7 +181,7 @@ def gen_importance(cell_type, nc, peaks_df, variant_names):
     print(profiles.shape)
     # print("jsd:", jensenshannon(profiles[0], profiles[1]))
     for i in range(numseq // 2):
-        lfc.append(sc_lfc(preds[2 * i], preds[2 * i + 1], cutoff))
+        lfc.append(sc_lfc(preds[2 * i], preds[2 * i + 1], 0)) #cutoff 0
         d_lfc.append(abs(lfc[i]))
         jsd.append(jensenshannon(profiles[2 * i], profiles[2 * i + 1])[0])
     print("jsd: ", jsd)
@@ -183,6 +190,9 @@ def gen_importance(cell_type, nc, peaks_df, variant_names):
     output['rsID'] = variant_names
     output['lfc'] = lfc
     output['d_lfc'] = d_lfc
+    # output['alts'] = alts
+    # output['refs'] = 
+    # output['max_alleles'] = 
     output['jsd'] = jsd
 
     return output

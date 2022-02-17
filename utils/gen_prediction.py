@@ -60,6 +60,15 @@ def postprocess(pred):
     counts = np.exp(pred[1])[0][0]
     return profile*counts
 
+def postprocess_chrombpnet(logits, logcts):
+    print("LOGITS:", logits[0])
+    print("LOGCTS:", logcts[0][0])
+    profile = softmax(logits[0])
+    counts = logcts[0][0]
+    print("PROFILE:", profile)
+    print("COUNTS:", counts)
+    return profile * counts
+
 def get_range(pred1, pred2, st, en):
     minval = min(np.amin(pred1[st:en]), np.amin(pred2[st:en]))
     maxval = max(np.amax(pred1[st:en]), np.amax(pred2[st:en]))
@@ -147,6 +156,38 @@ def predict_main(model, peaks_df):
     lfcpred = gen_graphs(lfc[st:en], 'Log Full Change Graph [alt/ref]', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
     #gen_graphs(delta[st:en], 'Delta Prediction Graph', 'static/images/app/deltapred.png', minval, maxval)
     return altpred, refpred, lfcpred, export
+
+
+def predict_main_chrombpnet(model_chrombpnet, model_bias, peaks_df):
+    sequences = load_sequences(peaks_df)
+    X = one_hot_encode(sequences, 2114)
+    X1 = np.reshape(X[0], (1, 2114, 4))
+    X2 = np.reshape(X[1], (1, 2114, 4))
+    control_profile = np.zeros((1, 1000, 2))
+    control_logcount = np.zeros(1)
+    
+    altpredbias_logits, altpredbias_logcts = model_bias.predict(X1, batch_size=1, verbose=True)
+    refpredbias_logits, refpredbias_logcts = model_bias.predict(X2, batch_size=1, verbose=True)
+    print("INFO:", altpredbias_logits, altpredbias_logcts)
+    altpredchrom_logits, altpredchrom_logcts = model_chrombpnet.predict([X1, altpredbias_logits, altpredbias_logcts], batch_size=1, verbose=True)
+    refpredchrom_logits, refpredchrom_logcts = model_chrombpnet.predict([X2, refpredbias_logits, refpredbias_logcts], batch_size=1, verbose=True)
+    print("INFO:", altpredchrom_logits, altpredchrom_logcts)
+    altlogits_wobias = altpredchrom_logits - altpredbias_logits
+    reflogits_wobias = refpredchrom_logits - refpredbias_logits
+    altlogcts_wobias = np.exp(altpredchrom_logcts)-np.exp(altpredbias_logcts)
+    reflogcts_wobias = np.exp(refpredchrom_logcts)-np.exp(refpredbias_logcts)
+    #delta = np.subtract(prediction2, prediction1)
+    altpred = postprocess_chrombpnet(altlogits_wobias, altlogcts_wobias)
+    refpred = postprocess_chrombpnet(reflogits_wobias, reflogcts_wobias)
+    print(altpred, refpred)
+    lfc, lfcmin, lfcmax = log_full_change(altpred, refpred)
+    
+    st, en = 300, 700
+    minval, maxval = get_range(altpred, refpred, st, en)
+    altpred = gen_graphs(altpred[st:en], 'Alternate Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/altpred.png', minval, maxval)
+    refpred = gen_graphs(refpred[st:en], 'Reference Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/refpred.png', minval, maxval)
+    lfcpred = gen_graphs(lfc[st:en], 'Log Full Change Graph [alt/ref]', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
+    return altpred, refpred, lfcpred
 
 if __name__ == '__main__':
     predict_main('../data/peaks/app.bed')

@@ -21,7 +21,7 @@ from tensorflow.keras.utils import CustomObjectScope
 from tensorflow import compat
 from tensorflow.keras.models import load_model
 
-from utils.load_model import load
+from utils.load_model import load, load_chrombpnet
 # from load_model import load
 
 
@@ -77,6 +77,41 @@ def shap_scores(model, peaks_df):
     
     #print(peaks_df.head(), X, counts_shap_scores[0])
     print("RETURNING 3 FILES")
+    return peaks_df, X, counts_shap_scores[0]
+
+def shap_scores_chrombpnet(model, peaks_df):
+    # peaks_df['start'] = peaks_df['st'] + peaks_df['summit'] - (2114 // 2)
+    # peaks_df['end'] = peaks_df['st'] + peaks_df['summit'] + (2114 // 2)
+    num_peaks = peaks_df.shape[0]
+    fasta_ref = pysam.FastaFile('reference/hg38.genome.fa')  #..
+    
+    sequences = []
+    for idx, row in peaks_df.iterrows():
+        start = row['start']
+        end = row['end']
+        peak_loc = 1057
+        allele = row['allele']
+        seq = fasta_ref.fetch(row['chrom'], start, end).upper()
+        seq = insert_variant(seq, allele, peak_loc)        
+        if len(seq) != 2114:
+            continue
+        sequences.append(seq)
+
+    X = one_hot_encode(sequences, 2114)
+    print("X shape", X.shape)
+
+    counts_model_input = [model.input[0], model.input[2]]
+    counts_input = [X, np.zeros((X.shape[0], 1))]
+    
+    profile_model_counts_explainer = shap.explainers.deep.TFDeepExplainer(
+            (counts_model_input, tf.reduce_sum(model.outputs[1], axis=-1)),
+            shuffle_several_times,
+            combine_mult_and_diffref=combine_mult_and_diffref)
+
+    print("Generating 'counts' shap scores")
+    counts_shap_scores = profile_model_counts_explainer.shap_values(
+            counts_input, progress_message=10)
+    
     return peaks_df, X, counts_shap_scores[0]
 
 def get_imp(scores, seqs, start, end):
@@ -174,6 +209,19 @@ def shap_scores_main(cell_type, peaks_df, nc):
     peaks_df['start'] = peaks_df['st'] + peaks_df['summit'] - (2114 // 2)
     peaks_df['end'] = peaks_df['st'] + peaks_df['summit'] + (2114 // 2)
     peaks_df2, sequences, scores = shap_scores(model, peaks_df)
+    return gen_graphs(peaks_df2, sequences, scores)
+
+def shap_scores_main_chrombpnet(cell_type, peaks_df):
+    # tf.compat.v1.disable_eager_execution()
+    # peaks_df2, sequences, scores = shap_scores(model, peaks_df)
+    # gen_graphs(peaks_df2, sequences, scores)
+    tf.compat.v1.disable_v2_behavior()
+    model, biasmodel = load_chrombpnet(cell_type)
+    print(peaks_df.head())
+    peaks_df['start'] = peaks_df['st'] + peaks_df['summit'] - (2114 // 2)
+    peaks_df['end'] = peaks_df['st'] + peaks_df['summit'] + (2114 // 2)
+
+    peaks_df2, sequences, scores = shap_scores_chrombpnet(model, peaks_df)
     return gen_graphs(peaks_df2, sequences, scores)
 
 if __name__ == '__main__':
