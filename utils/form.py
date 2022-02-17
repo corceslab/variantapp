@@ -26,7 +26,7 @@ class form_rsID(Form):
         ('C17 - Astrocytes (unclassified)'), ('C18 - Potential Doublets'), ('C19 - Oligodendrocytes'), ('C20 - Oligodendrocytes'), ('C21 - Oligodendrocytes'), ('C22 - Oligodendrocytes'), \
         ('C23 - Oligodendrocytes')])
     rsID = TextField("Variant rsID List", validators=[validators.InputRequired()])
-    nc = SelectField(u'Negative Sampling Ratio', choices=[("00"), ("02"), ("03"), ("05"), ("10"), ("20"), ("50")])
+    # nc = SelectField(u'Negative Sampling Ratio', choices=[("00"), ("02"), ("03"), ("05"), ("10"), ("20"), ("50")])
     submit = SubmitField("Submit")
 
 class form_scoring(Form):

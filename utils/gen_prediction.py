@@ -81,7 +81,7 @@ def gen_graphs(pred, title, filepath, minval, maxval):
     plt.switch_backend('Agg')
     fig = plt.figure(figsize=(30,3))
     plt.title(title)
-    plt.ylabel("Predicted TF Binding")
+    plt.ylabel("Predicted Counts")
     plt.xlim([0, 399])
     plt.ylim([minval, maxval])
     plt.plot(pred)

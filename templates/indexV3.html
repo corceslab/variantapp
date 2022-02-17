@@ -17,10 +17,6 @@
     {% for message in form.rsID.errors %}
     <div class="flash">{{ message }}</div>
     {% endfor %}
-    
-    {% for message in form.nc.errors %}
-    <div class="flash">{{ message }}</div>
-    {% endfor %}
 
 
     <form method=post>
@@ -30,9 +26,6 @@
 
       {{ form.rsID.label }}
       {{ form.rsID }}
-
-      {{ form.nc.label }}
-      {{ form.nc(class="selectNC") }}
 
       <br>
       <!-- {{ form.submit }} -->

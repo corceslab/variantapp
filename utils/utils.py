@@ -122,7 +122,7 @@ def generate_output_rsID_chrombpnet(cell_type, rsID):
         variant.paste(s2, (0, p1.height + p2.height + p3.height + s1.height))
         variant.paste(s3, (0, p1.height + p2.height + p3.height+ s1.height+ s2.height))
         images.append(variant)
-        variant.save(rsID + '.pdf')
+        variant.save('output_pdfs/' + rsID + '.pdf')
     
     motiftables = []
     for i, g in peaks_df.groupby(peaks_df.index // 2):
