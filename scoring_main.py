@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
     vars_df = load_variants()
     print(vars_df.info())
-    vars_df = vars_df[vars_df['Has_ML_prediction'] == True]
+    # vars_df = vars_df[vars_df['Has_ML_prediction'] == True]
     vars_df = vars_df[['SNP_rsID', 'Disease', 'hg38_Chromosome', 'hg38_Position', 'Effect_Allele', 'Noneffect_Allele', 'ML_confidence', 'ML_sig_clusters']]
     vars_df = vars_df.sort_values('ML_confidence', ascending=False)
     #vars_df = vars_df[vars_df['Disease']=='AD']

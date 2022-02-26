@@ -5,3 +5,12 @@ data/tracks/C24_track.bw
 *.ipynb
 static/zip/*
 static/text/motifs.txt
+static/assets/*
+templates/404.html
+templates/README.md
+templates/about.html
+templates/contact.html
+templates/header.html
+templates/index.html
+templates/index_home.html
+templates/login.html

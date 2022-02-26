@@ -10,9 +10,15 @@ def add_variant(df, chromosome, position, allele):
 def query_rsID(rsID):
     mv = myvariant.MyVariantInfo()
     rsIDs = rsID.split(", ")
+    print(len(rsIDs))
     var_df = pd.DataFrame(columns = ['chrom', 'st', 'allele'])
+    bad_SNPs = ['rs199504614','rs142767245', 'rs113242154']
+    counter = 0
     for id in rsIDs:
-        print("querying: ", id)
+        counter+=1
+        if(id in bad_SNPs):
+            continue
+        # print("querying: ", id)
         rsID_info = mv.query('dbsnp.rsid:'+id, fields='vcf', assembly='hg38')
         hits = rsID_info['hits']
         data = hits[0]
@@ -26,6 +32,7 @@ def query_rsID(rsID):
         # alt alleles are in even rows (2k), ref alleles are in odd rows (1+2k)
         var_df = add_variant(var_df, chrom, position, alt_allele)
         var_df = add_variant(var_df, chrom, position, ref_allele)
+        if(counter % 100 == 0): print(counter)
 
     var_df['summit'] = 0
     var_df['signalValue'] = 10

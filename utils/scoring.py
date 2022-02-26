@@ -8,7 +8,7 @@ import shap
 from mseqgen.sequtils import one_hot_encode
 from scipy.special import softmax
 
-from utils.load_model import load
+from utils.load_model import load, load_chrombpnet
 from deeplift.dinuc_shuffle import dinuc_shuffle
 from basepairmodels.cli.bpnetutils import *
 from basepairmodels.cli.shaputils import *
@@ -38,7 +38,7 @@ def load_sequences(peaks_df):
 def merge(pred_logits, pred_logcts):
     profile = softmax(pred_logits)
     # print(profile.shape)
-    counts = np.exp(pred_logcts)[0]
+    counts = np.exp(pred_logcts)[0] - 1
     # print("counts: ", counts)
     return profile*counts
 
@@ -86,7 +86,6 @@ def gen_score(model, peaks_df, variant_names):
     #predict
     pred_logits, pred_logcts = model.predict([X, cl, cp], batch_size=numseq, verbose=True)
     #print("prediction output shapes: ", pred_logits.shape, pred_logcts.shape)
-    
     #merge
     preds = []
     for i in range(numseq):
@@ -123,7 +122,7 @@ def gen_importance(cell_type, nc, peaks_df, variant_names):
     bias_profile_input = np.zeros((num_peaks, 1000, 2))
 
     tf.compat.v1.disable_eager_execution()
-    model = load(cell_type, nc)
+    model = load_chrombpnet(cell_type)
 
     sequences = []
     dist_seqs = []
