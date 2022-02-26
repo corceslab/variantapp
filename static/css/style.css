@@ -9,7 +9,7 @@ body {
   .container {
     text-align: center;
     font-family: Helvetica;
-    font-size: 30px;
+    font-size: 24px;
     background-color: white;
     width: 940px;
     /* height: 400px; */
@@ -168,6 +168,7 @@ form input#rsID {
   font-size: 15px;
   margin: 5px;
   font-family: Helvetica;
+  color:black;
   text-align: center;
 }
  
@@ -199,6 +200,7 @@ form input#rsID {
   margin: 5px;
   text-align: center;
   font-family: Helvetica;
+  color: black;
   }
   .selectNC {
     height: 33px;
@@ -247,6 +249,7 @@ form input#rsID {
     padding: 5px;
     font-size: 1.1em;
     font-family: Helvetica;
+    color: black;
   }
    
    form input#submit {

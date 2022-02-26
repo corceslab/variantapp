@@ -101,26 +101,29 @@ def generate_output_rsID_chrombpnet(cell_type, rsID):
     images = []
     for i, g in peaks_df.groupby(peaks_df.index // 2):
         model_chrombpnet, model_bias = load_chrombpnet(cell_type)
-        altpred, refpred, lfcpred = predict_main_chrombpnet(model_chrombpnet, model_bias, g)
-        print("prediction: ", i)
-        altshap, refshap, delshap, shapexport = shap_scores_main_chrombpnet(cell_type, g)
-        print("importance scores: ", i)
+        print("\n\n\n\n\n\n\n\n\nCHROMBPNET MODEL SUMMARY\n\n")
+        model_chrombpnet.summary()
+        print("\n\n\n\n\n\n\n\n\nBIAS MODEL SUMMARY\n\n")
+        model_bias.summary()
+        print("\n\n\n\n\n")
+        altrefpred, lfcpred = predict_main_chrombpnet(model_chrombpnet, model_bias, g)
+        # print("prediction: ", i)
+        altshap, refshap, delshap = shap_scores_main_chrombpnet(cell_type, g)
+        # print("importance scores: ", i)
 
-        p1 = Image.open(io.BytesIO(base64.b64decode(altpred)))
-        p2 = Image.open(io.BytesIO(base64.b64decode(refpred)))
+        p1 = Image.open(io.BytesIO(base64.b64decode(altrefpred)))
         p3 = Image.open(io.BytesIO(base64.b64decode(lfcpred)))
         s1 = Image.open(io.BytesIO(base64.b64decode(altshap)))
         s2 = Image.open(io.BytesIO(base64.b64decode(refshap)))
         s3 = Image.open(io.BytesIO(base64.b64decode(delshap)))
-        variant = Image.new('RGB', (p1.width, p1.height + p2.height + p3.height + s1.height + s2.height + s3.height)) 
-        print("width", p1.width)
-        print("heights", p1.height, p2.height, p3.height, s1.height, s2.height, s3.height)
+        variant = Image.new('RGB', (p1.width, p1.height + p3.height + s1.height + s2.height + s3.height)) 
+        # print("width", p1.width)
+        # print("heights", p1.height, p3.height, s1.height, s2.height, s3.height)
         variant.paste(p1, (0, 0))
-        variant.paste(p2, (0, p1.height))
-        variant.paste(p3, (0, p1.height + p2.height))
-        variant.paste(s1, (0, p1.height + p2.height + p3.height))
-        variant.paste(s2, (0, p1.height + p2.height + p3.height + s1.height))
-        variant.paste(s3, (0, p1.height + p2.height + p3.height+ s1.height+ s2.height))
+        variant.paste(p3, (0, p1.height))
+        variant.paste(s1, (0, p1.height + p3.height))
+        variant.paste(s2, (0, p1.height + p3.height + s1.height))
+        variant.paste(s3, (0, p1.height + p3.height+ s1.height+ s2.height))
         images.append(variant)
         variant.save('output_pdfs/' + rsID + '.pdf')
     
@@ -135,7 +138,7 @@ def generate_output_rsID_chrombpnet(cell_type, rsID):
     export_images = []
     for i in range(len(images)):
         encoded = io.BytesIO()
-        print("i:", i, "rsIDs[i]:", rsIDs[i])
+        # print("i:", i, "rsIDs[i]:", rsIDs[i])
         width = 3000
         height = 2230
         export_image = Image.new('RGB', (width, height), (255, 255, 255))

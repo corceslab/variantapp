@@ -21,7 +21,6 @@ from tensorflow import compat
 app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
-
 def home():
     """Home page of app with form"""
     app.jinja_env.auto_reload = True
@@ -42,27 +41,48 @@ def home():
         return render_template('outputV3.html', zip=zip(graphs,motifs))
     return render_template('indexV3.html', form=form)
 
-# @app.route('/varianteffectvisualizer')
-# def vev():
-#     """Home page of app with form"""
-#     app.jinja_env.auto_reload = True
-#     app.config['TEMPLATES_AUTO_RELOAD'] = True
-#     form = form_rsID(request.form)
-#     if request.method == 'POST' and form.validate():
-#         cell_type = request.form['cell_type']
-#         rsID = request.form['rsID']
-#         nc = request.form['nc']
+@app.route("/chrombpnet", methods=['GET', 'POST'])
+def home_chrombpnet():
+    """Home page of app with form"""
+    app.jinja_env.auto_reload = True
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
+    form = form_rsID(request.form)
+    if request.method == 'POST' and form.validate():
+        cell_type = request.form['cell_type']
+        rsID = request.form['rsID']
 
-#         motifs = []
-#         graphs, tables = generate_output_rsID(cell_type, rsID, nc)
-#         for i in range(len(graphs)):
-#             graphs[i] = graphs[i].decode('utf-8')
-#         for table in tables:
-#             motifs.append(Markup(table))
-#         ind = list(range(len(graphs)))
-#         print(ind)
-#         return render_template('outputV3.html', zip=zip(graphs,motifs))
-#     return render_template('indexV3.html', form=form)
+        motifs = []
+        graphs, tables = generate_output_rsID_chrombpnet(cell_type, rsID)
+        for i in range(len(graphs)):
+            graphs[i] = graphs[i].decode('utf-8')
+        for table in tables:
+            motifs.append(Markup(table))
+        ind = list(range(len(graphs)))
+        print(ind)
+        return render_template('outputV3.html', zip=zip(graphs,motifs))
+    return render_template('indexV3.html', form=form)
+
+@app.route("/bpnet", methods=['GET', 'POST'])
+def home_bpnet():
+    """Home page of app with form"""
+    app.jinja_env.auto_reload = True
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
+    form = form_rsID(request.form)
+    if request.method == 'POST' and form.validate():
+        cell_type = request.form['cell_type']
+        rsID = request.form['rsID']
+        nc = "10"
+
+        motifs = []
+        graphs, tables = generate_output_rsID(cell_type, rsID, nc)
+        for i in range(len(graphs)):
+            graphs[i] = graphs[i].decode('utf-8')
+        for table in tables:
+            motifs.append(Markup(table))
+        ind = list(range(len(graphs)))
+        print(ind)
+        return render_template('outputV3.html', zip=zip(graphs,motifs))
+    return render_template('indexV3.html', form=form)
 
 # @app.route('/variantscoring')
 # def vs():

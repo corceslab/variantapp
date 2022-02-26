@@ -128,6 +128,22 @@ def get_range(shap1, shap2, delta):
     maxval+=buffer
     return minval, maxval
 
+def get_range_chrombpnet(shap1, shap2):
+    minval = min(np.amin(shap1), np.amin(shap2))
+    maxval = max(np.amax(shap1), np.amax(shap2))
+    buffer = 0.2 * (maxval-minval)
+    minval-=buffer
+    maxval+=buffer
+    return minval, maxval
+
+def get_minmax_chrombpnet(shap1):
+    minval = np.amin(shap1)
+    maxval = np.amax(shap1)
+    buffer = 0.2 * (maxval-minval)
+    minval-=buffer
+    maxval+=buffer
+    return minval, maxval
+
 def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     c_chrom = peaks_df['chrom']
     c_start = peaks_df['start']
@@ -136,35 +152,11 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     c_seqs = one_hot_sequences
     c_scores = hyp_shap_scores
     center = 1056
-    diff = 100
+    diff = 40
     start, end = center - diff, center + diff + 1
     alt_scores = get_imp(c_scores[0], c_seqs[0], start, end)
     ref_scores = get_imp(c_scores[1], c_seqs[1], start, end)
     delta_scores = alt_scores-ref_scores
-
-    # with open("static/csv/data.csv", "ab") as f:
-    #     f.write(b"Alternate Importance Scores: \n")
-    #     np.savetxt(f, alt_scores, delimiter=",")
-    #     f.write(b"\n")
-    #     f.write(b"Reference Importance Scores: \n")
-    #     np.savetxt(f, ref_scores, delimiter=",")
-    #     f.write(b"\n")
-    #     f.write(b"Delta Importance Scores: \n")
-    #     np.savetxt(f, delta_scores, delimiter=",")
-
-    export = io.StringIO()
-    export.write("Alternate Importance Scores:\n")
-    csv.writer(export).writerows(alt_scores.tolist())
-    export.write("\n")
-    export.write("\n")
-    export.write("Reference Importance Scores:\n")
-    csv.writer(export).writerows(ref_scores.tolist())
-    export.write("\n")
-    export.write("\n")
-    export.write("Delta Importance Scores:\n")
-    csv.writer(export).writerows(delta_scores.tolist())
-    export.write("\n")
-    export.write("\n")
 
     alt_allele_seq = c_seqs[0][1056]
     alt = 'N'
@@ -188,14 +180,15 @@ def gen_graphs(peaks_df, one_hot_sequences, hyp_shap_scores):
     elif ref_allele_seq[3] == 1:
         ref = 'T'
 
-    minval, maxval = get_range(alt_scores, ref_scores, delta_scores)
+    minval, maxval = get_range_chrombpnet(alt_scores, ref_scores)
+    mindelta, maxdelta = get_minmax_chrombpnet(delta_scores)
     title1 = "Alternate Importance Scores [allele: " + alt + "]"
     title2 = "Reference Importance Scores [allele: " + ref + "]"
-    title3 = "Delta: [alt-ref]"
-    altshap = viz_sequence.plot_weights(array=alt_scores, title=title1, filepath='static/images/app/altimp.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
-    refshap = viz_sequence.plot_weights(array=ref_scores, title=title2, filepath='static/images/app/refimp.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
-    delshap = viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
-    return altshap, refshap, delshap, export
+    title3 = "Delta [alt-ref]"
+    altshap = viz_sequence.plot_weights(array=alt_scores, title=title1, filepath='static/images/app/altimp.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 3))
+    refshap = viz_sequence.plot_weights(array=ref_scores, title=title2, filepath='static/images/app/refimp.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 3))
+    delshap = viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png', minval=mindelta, maxval=maxdelta, color="lightsteelblue", figsize=(30, 3))
+    return altshap, refshap, delshap
 
 
 

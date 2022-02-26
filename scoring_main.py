@@ -20,14 +20,14 @@ from tensorflow import compat
 
 if __name__ == '__main__':
     cluster = '24'
-    nc = '20'
+    nc = '02'
 
     vars_df = load_variants()
     print(vars_df.info())
     vars_df = vars_df[vars_df['Has_ML_prediction'] == True]
     vars_df = vars_df[['SNP_rsID', 'Disease', 'hg38_Chromosome', 'hg38_Position', 'Effect_Allele', 'Noneffect_Allele', 'ML_confidence', 'ML_sig_clusters']]
     vars_df = vars_df.sort_values('ML_confidence', ascending=False)
-    vars_df = vars_df[vars_df['Disease']=='AD']
+    #vars_df = vars_df[vars_df['Disease']=='AD']
     vars_df = vars_df[vars_df['SNP_rsID'].str[:2]=='rs']
     filtered_vars_df = vars_df[vars_df['ML_sig_clusters'].str.find(cluster) != -1]
     print(vars_df.info())

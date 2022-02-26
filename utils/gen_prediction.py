@@ -61,12 +61,12 @@ def postprocess(pred):
     return profile*counts
 
 def postprocess_chrombpnet(logits, logcts):
-    print("LOGITS:", logits[0])
-    print("LOGCTS:", logcts[0][0])
+    # print("LOGITS:", logits[0])
+    # print("LOGCTS:", logcts[0][0])
     profile = softmax(logits[0])
     counts = logcts[0][0]
-    print("PROFILE:", profile)
-    print("COUNTS:", counts)
+    # print("PROFILE:", profile)
+    # print("COUNTS:", counts)
     return profile * counts
 
 def get_range(pred1, pred2, st, en):
@@ -79,15 +79,37 @@ def get_range(pred1, pred2, st, en):
     
 def gen_graphs(pred, title, filepath, minval, maxval):
     plt.switch_backend('Agg')
-    fig = plt.figure(figsize=(30,3))
-    plt.title(title)
-    plt.ylabel("Predicted Counts")
+    fig = plt.figure(figsize=(30,4))
+    plt.title(title, fontsize=20)
+    plt.xlabel("Bases (bp)", fontsize=15)
+    plt.ylabel("Predicted Counts", fontsize=15)
     plt.xlim([0, 399])
     plt.ylim([minval, maxval])
-    plt.plot(pred)
-    plt.plot(np.zeros(400), color="gray")
+    plt.plot(pred, color="steelblue")
+    plt.plot(np.zeros(400), color="darkgray")
+    plt.gcf().subplots_adjust(bottom=0.2)
     currentAxis = plt.gca()
-    currentAxis.add_patch(Rectangle((199 - .5, minval), 1, maxval-minval, facecolor="grey", alpha=0.5))
+
+    currentAxis.add_patch(Rectangle((199 - .5, minval), 1, maxval-minval, facecolor="lightsteelblue", alpha=0.5))
+    return fig_to_img(plt.gcf())
+    #plt.savefig(filepath)
+
+def gen_graphs_chrombpnet(pred1, pred2, title, altlegend, reflegend, minval, maxval):
+    plt.switch_backend('Agg')
+    fig = plt.figure(figsize=(30,4))
+    plt.title(title, fontsize=20)
+    plt.xlabel("Bases (bp)", fontsize=15)
+    plt.ylabel("Predicted Counts", fontsize=15)
+    plt.xlim([0, 399])
+    plt.ylim([minval, maxval])
+    plt.plot(pred1, color="darkorange", label="Alternate Allele [" + altlegend + "]")
+    plt.legend(fontsize=15)
+    plt.plot(pred2, color="navy", label="Reference Allele [" + reflegend + "]")
+    plt.legend(fontsize=15)
+    plt.plot(np.zeros(400), color="darkgray")
+    plt.gcf().subplots_adjust(bottom=0.2)
+    currentAxis = plt.gca()
+    currentAxis.add_patch(Rectangle((199 - .5, minval), 1, maxval-minval, facecolor="lightsteelblue", alpha=0.5))
     return fig_to_img(plt.gcf())
     #plt.savefig(filepath)
 
@@ -101,10 +123,10 @@ def fig_to_img(fig):
     encoded_img_data = base64.b64encode(data.getvalue())
     return encoded_img_data
 
-def log_full_change(ref_track, alt_track):
+def log_full_change(alt_track, ref_track):
     ref_track = ref_track + 0.001
     alt_track = alt_track + 0.001
-    track = np.divide(alt_track, ref_track)
+    track = np.divide(ref_track, alt_track)
     #multiplier = 10000/np.sum(track)
     #track = track * multiplier
     track = np.log2(track)
@@ -153,7 +175,7 @@ def predict_main(model, peaks_df):
     minval, maxval = get_range(prediction1, prediction2, st, en)
     altpred = gen_graphs(prediction1[st:en], 'Alternate Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/altpred.png', minval, maxval)
     refpred = gen_graphs(prediction2[st:en], 'Reference Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/refpred.png', minval, maxval)
-    lfcpred = gen_graphs(lfc[st:en], 'Log Full Change Graph [alt/ref]', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
+    lfcpred = gen_graphs(lfc[st:en], 'Log Full Change Graph (ref/alt)', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
     #gen_graphs(delta[st:en], 'Delta Prediction Graph', 'static/images/app/deltapred.png', minval, maxval)
     return altpred, refpred, lfcpred, export
 
@@ -168,10 +190,10 @@ def predict_main_chrombpnet(model_chrombpnet, model_bias, peaks_df):
     
     altpredbias_logits, altpredbias_logcts = model_bias.predict(X1, batch_size=1, verbose=True)
     refpredbias_logits, refpredbias_logcts = model_bias.predict(X2, batch_size=1, verbose=True)
-    print("INFO:", altpredbias_logits, altpredbias_logcts)
+    # print("INFO:", altpredbias_logits, altpredbias_logcts)
     altpredchrom_logits, altpredchrom_logcts = model_chrombpnet.predict([X1, altpredbias_logits, altpredbias_logcts], batch_size=1, verbose=True)
     refpredchrom_logits, refpredchrom_logcts = model_chrombpnet.predict([X2, refpredbias_logits, refpredbias_logcts], batch_size=1, verbose=True)
-    print("INFO:", altpredchrom_logits, altpredchrom_logcts)
+    # print("INFO:", altpredchrom_logits, altpredchrom_logcts)
     altlogits_wobias = altpredchrom_logits - altpredbias_logits
     reflogits_wobias = refpredchrom_logits - refpredbias_logits
     altlogcts_wobias = np.exp(altpredchrom_logcts)-np.exp(altpredbias_logcts)
@@ -179,15 +201,16 @@ def predict_main_chrombpnet(model_chrombpnet, model_bias, peaks_df):
     #delta = np.subtract(prediction2, prediction1)
     altpred = postprocess_chrombpnet(altlogits_wobias, altlogcts_wobias)
     refpred = postprocess_chrombpnet(reflogits_wobias, reflogcts_wobias)
-    print(altpred, refpred)
+    # print(altpred, refpred)
     lfc, lfcmin, lfcmax = log_full_change(altpred, refpred)
     
     st, en = 300, 700
     minval, maxval = get_range(altpred, refpred, st, en)
-    altpred = gen_graphs(altpred[st:en], 'Alternate Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/altpred.png', minval, maxval)
-    refpred = gen_graphs(refpred[st:en], 'Reference Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/refpred.png', minval, maxval)
-    lfcpred = gen_graphs(lfc[st:en], 'Log Full Change Graph [alt/ref]', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
-    return altpred, refpred, lfcpred
+    preds = gen_graphs_chrombpnet(altpred[st:en], refpred[st:en], 'Model Predictions', sequences[0][1056], sequences[1][1056], minval, maxval)
+    # altpred = gen_graphs(altpred[st:en], 'Alternate Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/altpred.png', minval, maxval)
+    # refpred = gen_graphs(refpred[st:en], 'Reference Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/refpred.png', minval, maxval)
+    lfcpred = gen_graphs(lfc[st:en], 'Log Fold Change Graph [alt/ref]', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
+    return preds, lfcpred
 
 if __name__ == '__main__':
     predict_main('../data/peaks/app.bed')
