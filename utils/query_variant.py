@@ -12,13 +12,13 @@ def query_rsID(rsID):
     rsIDs = rsID.split(", ")
     print(len(rsIDs))
     var_df = pd.DataFrame(columns = ['chrom', 'st', 'allele'])
-    bad_SNPs = ['rs199504614','rs142767245', 'rs113242154']
+    bad_SNPs = ['rs199504614','rs142767245', 'rs113242154', 'rs144707726']
     counter = 0
     for id in rsIDs:
         counter+=1
         if(id in bad_SNPs):
             continue
-        # print("querying: ", id)
+        print("querying: ", id)
         rsID_info = mv.query('dbsnp.rsid:'+id, fields='vcf', assembly='hg38')
         hits = rsID_info['hits']
         data = hits[0]
@@ -53,5 +53,22 @@ def query_values(chrom, position, effect_allele, noneffect_allele):
     var_df['end'] = var_df['st'] + var_df['summit'] + (2114 // 2)
     var_df = var_df.reset_index(drop=True)
     return var_df
+
+def query_values_scoring(vars_df):
+    peaks_df = pd.DataFrame(columns = ['chrom', 'st', 'allele'])
+    for i, g in vars_df.groupby(vars_df.index):
+        # print("g", g)
+        # print("g['chrom']", g['chrom'].iloc[0])
+        # print("g['st']", g['st'])
+        # print("g['effect']", g['effect'])
+        peaks_df = add_variant(peaks_df, g['chrom'].iloc[0], g['st'].iloc[0], g['effect'].iloc[0])
+        peaks_df = add_variant(peaks_df, g['chrom'].iloc[0], g['st'].iloc[0], g['noneffect'].iloc[0])
+    peaks_df['summit'] = 0
+    peaks_df['signalValue'] = 10
+    peaks_df['start'] = peaks_df['st'] + peaks_df['summit'] - (2114 // 2)
+    peaks_df['end'] = peaks_df['st'] + peaks_df['summit'] + (2114 // 2)
+    peaks_df = peaks_df.reset_index(drop=True)
+    # print(peaks_df)
+    return peaks_df
     
 

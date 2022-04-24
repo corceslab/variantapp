@@ -1,2 +1,3 @@
-chr3	52498434	A	0	10
-chr3	52498434	G	0	10
+chrom, st, allele, summit, signalValue, start, end
+chr3, 52498434, A, 0, 10, 52497377, 52499491
+chr3, 52498434, G, 0, 10, 52497377, 52499491

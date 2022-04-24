@@ -74,7 +74,6 @@ def get_motif(input_chrom, input_loc):
     </body>
     </html>
     '''
-
     s = html_string.format(table=motifs_main.to_html(classes='mystyle', escape=False, formatters=dict(image=path_to_image_html), index=False))
     return s
 

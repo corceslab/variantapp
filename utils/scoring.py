@@ -122,7 +122,7 @@ def gen_importance(cell_type, nc, peaks_df, variant_names):
     bias_profile_input = np.zeros((num_peaks, 1000, 2))
 
     tf.compat.v1.disable_eager_execution()
-    model = load_chrombpnet(cell_type)
+    model, model_bias = load_chrombpnet(cell_type)
 
     sequences = []
     dist_seqs = []
@@ -150,21 +150,23 @@ def gen_importance(cell_type, nc, peaks_df, variant_names):
     print("X shape", X.shape)
     print("HERE")
 
-    #background prediction
-    dist_cl = np.zeros((dist_numseq, 1))
-    dist_cp = np.zeros((dist_numseq, 1000, 2))
-    dist_pred_logits, dist_pred_logcts = model.predict([dist_X, dist_cl, dist_cp], batch_size=dist_numseq, verbose=True)
-    dist_counts = np.exp(dist_pred_logcts)
-    print(type(dist_counts))
-    dist_counts = np.sort(dist_counts[:, 0])
-    print("dist_counts: ", dist_counts, dist_counts.size)
-    cutoff = dist_counts[int(dist_counts.size/10)]
-    print(cutoff)
+    # #background prediction
+    # dist_cl = np.zeros((dist_numseq, 1))
+    # dist_cp = np.zeros((dist_numseq, 1000, 2))
+    # dist_pred_logits, dist_pred_logcts = model.predict([dist_X, dist_cl, dist_cp], batch_size=dist_numseq, verbose=True)
+    # dist_counts = np.exp(dist_pred_logcts)
+    # print(type(dist_counts))
+    # dist_counts = np.sort(dist_counts[:, 0])
+    # print("dist_counts: ", dist_counts, dist_counts.size)
+    # cutoff = dist_counts[int(dist_counts.size/10)]
+    # print(cutoff)
 
     #variant prediction
     cl = np.zeros((numseq, 1))
     cp = np.zeros((numseq, 1000, 2))
-    pred_logits, pred_logcts = model.predict([X, cl, cp], batch_size=numseq, verbose=True)
+    pred_logits, pred_logcts = model.predict([X,
+                                              np.zeros((numseq, model.output_shape[0][1])),
+                                              np.zeros((numseq, ))], batch_size=numseq, verbose=True)
 
     #merge
     preds = []

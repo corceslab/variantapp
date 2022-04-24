@@ -175,7 +175,7 @@ def predict_main(model, peaks_df):
     minval, maxval = get_range(prediction1, prediction2, st, en)
     altpred = gen_graphs(prediction1[st:en], 'Alternate Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/altpred.png', minval, maxval)
     refpred = gen_graphs(prediction2[st:en], 'Reference Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/refpred.png', minval, maxval)
-    lfcpred = gen_graphs(lfc[st:en], 'Log Full Change Graph (ref/alt)', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
+    lfcpred = gen_graphs(lfc[st:en], 'Log Fold Change Graph (ref/alt)', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
     #gen_graphs(delta[st:en], 'Delta Prediction Graph', 'static/images/app/deltapred.png', minval, maxval)
     return altpred, refpred, lfcpred, export
 
@@ -209,7 +209,7 @@ def predict_main_chrombpnet(model_chrombpnet, model_bias, peaks_df):
     preds = gen_graphs_chrombpnet(altpred[st:en], refpred[st:en], 'Model Predictions', sequences[0][1056], sequences[1][1056], minval, maxval)
     # altpred = gen_graphs(altpred[st:en], 'Alternate Prediction [allele: '+sequences[0][1056]+']', 'static/images/app/altpred.png', minval, maxval)
     # refpred = gen_graphs(refpred[st:en], 'Reference Prediction [allele: '+sequences[1][1056]+']', 'static/images/app/refpred.png', minval, maxval)
-    lfcpred = gen_graphs(lfc[st:en], 'Log Fold Change Graph [alt/ref]', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
+    lfcpred = gen_graphs(lfc[st:en], 'Log Fold Change Graph (ref/alt)', 'static/images/app/lfcpred.png', lfcmin, lfcmax)
     return preds, lfcpred
 
 if __name__ == '__main__':
