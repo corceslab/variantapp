@@ -10,7 +10,7 @@ import shutil
 from numpy.core.fromnumeric import var
 from tensorflow.python.training.server_lib import ClusterSpec
 
-from utils.utils import generate_explain_score_rankings, generate_explain_score
+from utils.utils import generate_explain_score_rankings
 
 import tensorflow as tf
 import pandas as pd
@@ -78,5 +78,5 @@ if __name__ == '__main__':
     # results = results.drop_duplicates(subset=['SNP_rsID'])
     results = results.reset_index(drop=True)
     print('\n\nFINAL RESULTS\n\n', results)
-    results.to_csv('data/output/scored_ADVariants_Ryan.csv')
+    results.to_csv('data/output/scored_ADVariants_ISEF.csv')
     

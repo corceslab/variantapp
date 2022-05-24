@@ -5,7 +5,7 @@ After=network.target
 User=ubuntu
 Group=www-data
 WorkingDirectory=/home/ubuntu/variantapp
-ExecStart=/home/ubuntu/.local/bin/gunicorn -b localhost:8000 -w 10 -t 600 appV2:app
+ExecStart=/home/ubuntu/.local/bin/gunicorn -b localhost:8000 -w 10 -t 600 main:app
 Restart=always
 [Install]
 WantedBy=multi-user.target

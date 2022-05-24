@@ -3,11 +3,18 @@ import pandas as pd
 
 
 def add_variant(df, chromosome, position, allele):
+    """ Inserts a variant (with chromosome, position, and allele information) into a Pandas dataframe
+    """
     df2 = pd.DataFrame([[chromosome, position, allele]], \
         columns = ['chrom', 'st', 'allele'])
     return df.append(df2)
 
 def query_rsID(rsID):
+    """ For each rsID, query the relevant information from the MyVariant package
+        Add each allele of the variant into the 'var_df' pandas dataframe, with
+        alt alleles in even rows (added first) and ref alleles in odd rows (added second)
+        Returns a pandas dataframe with an allele of a variant in each row
+    """
     mv = myvariant.MyVariantInfo()
     rsIDs = rsID.split(", ")
     print(len(rsIDs))
@@ -44,6 +51,9 @@ def query_rsID(rsID):
 
 
 def query_values(chrom, position, effect_allele, noneffect_allele):
+    """ For each variant, adds two rows to the var_df dataframe, one for
+        each allele, following the alt (0) / ref (1) standard
+    """
     var_df = pd.DataFrame(columns = ['chrom', 'st', 'allele'])
     var_df = add_variant(var_df, chrom, position, effect_allele)
     var_df = add_variant(var_df, chrom, position, noneffect_allele)
@@ -55,6 +65,9 @@ def query_values(chrom, position, effect_allele, noneffect_allele):
     return var_df
 
 def query_values_scoring(vars_df):
+    """ Creating the peaks_df file for bulk variant scoring
+        Compile key information (chrom, st, allele) from the original dataframe of variants
+    """
     peaks_df = pd.DataFrame(columns = ['chrom', 'st', 'allele'])
     for i, g in vars_df.groupby(vars_df.index):
         # print("g", g)
