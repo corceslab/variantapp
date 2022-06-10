@@ -66,12 +66,12 @@ def graph_lfc(pred, title, minval, maxval):
     plt.xlabel("Bases (bp)", fontsize=15)
     plt.ylabel("Predicted Counts", fontsize=15)
 
-    plt.xlim([0, 399])
+    plt.xlim([0, 999])
     plt.ylim([minval, maxval])
 
     # plotting the lfc track and the horizontal axis at 0
-    plt.plot(pred, color="steelblue")
-    plt.plot(np.zeros(400), color="darkgray")
+    plt.plot(pred, color="steelblue") # CHANGED .plot to .bar
+    plt.plot(np.zeros(1000), color="darkgray")
 
     # spacing corrections
     plt.gcf().subplots_adjust(bottom=0.2)
@@ -94,15 +94,16 @@ def graph_preds(pred1, pred2, title, altlegend, reflegend, minval, maxval):
     plt.xlabel("Bases (bp)", fontsize=15)
     plt.ylabel("Predicted Counts", fontsize=15)
 
-    plt.xlim([0, 399])
+    plt.xlim([0, 999])
     plt.ylim([minval, maxval])
 
     # plotting the two tracks and the horizontal axis at 0
-    plt.plot(pred1, color="darkorange", label="Alternate Allele [" + altlegend + "]")
+    plt.plot(pred1, color="darkorange", label="Alternate Allele [" + altlegend + "]", alpha=0.7) # CHANGED .plot to .bar
     plt.legend(fontsize=15)
-    plt.plot(pred2, color="navy", label="Reference Allele [" + reflegend + "]")
+    plt.plot(pred2, color="navy", label="Reference Allele [" + reflegend + "]", alpha=0.7) # CHANGED .plot to .bar np.arange(1000), 
     plt.legend(fontsize=15)
-    plt.plot(np.zeros(400), color="darkgray")
+
+    plt.plot(np.zeros(1000), color="darkgray")
 
     # spacing corrections
     plt.gcf().subplots_adjust(bottom=0.2)
@@ -141,7 +142,7 @@ def predict_main(model_chrombpnet, X, sequences):
     refpred = profiles[1]
     lfc, lfcmin, lfcmax = log_fold_change(altpred, refpred)
     
-    st, en = 300, 700
+    st, en = 0, 1000
     minval, maxval = get_range(altpred, refpred, st, en)
     predgraph = graph_preds(altpred[st:en], refpred[st:en], 'Model Predictions', sequences[0][1056], sequences[1][1056], minval, maxval)
     lfcgraph = graph_lfc(lfc[st:en], 'Log Fold Change Graph (ref/alt)', lfcmin, lfcmax)

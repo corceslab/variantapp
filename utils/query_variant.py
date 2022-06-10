@@ -9,6 +9,28 @@ def add_variant(df, chromosome, position, allele):
         columns = ['chrom', 'st', 'allele'])
     return df.append(df2)
 
+# def query_info(rsID):
+#     mv = myvariant.MyVariantInfo()
+#     rsID_info = mv.query('dbsnp.rsid:'+rsID, fields='vcf', assembly='hg38')
+#     data = rsID_info['hits'][0]
+#     chrom = data['_id'].split(':')[0]
+#     vcf = data['vcf']
+#     position = int(vcf['position'])
+#     alt_allele = vcf['alt']
+#     ref_allele = vcf['ref']
+#     return chrom, position, alt_allele, ref_allele
+
+def gen_var_df(chrom, position, alt_allele, ref_allele):
+    var_df = pd.DataFrame(columns = ['chrom', 'st', 'allele'])
+    var_df = add_variant(var_df, chrom, int(position), alt_allele)
+    var_df = add_variant(var_df, chrom, int(position), ref_allele)
+    var_df['summit'] = 0
+    var_df['signalValue'] = 10
+    var_df['start'] = var_df['st'] + var_df['summit'] - (2114 // 2)
+    var_df['end'] = var_df['st'] + var_df['summit'] + (2114 // 2)
+    var_df = var_df.reset_index(drop=True)
+    return var_df
+
 def query_rsID(rsID):
     """ For each rsID, query the relevant information from the MyVariant package
         Add each allele of the variant into the 'var_df' pandas dataframe, with

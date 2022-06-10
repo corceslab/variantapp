@@ -67,7 +67,7 @@ def gen_graphs(X, hyp_shap_scores, sequences):
         or just the postprocessed alt_scores and ref_scores
     """
     center = 1056
-    diff = 40
+    diff = 50 # CHANGED DIFF (was 40)
     start, end = center - diff, center + diff + 1
 
     alt_scores = get_imp(hyp_shap_scores[0], X[0], start, end)

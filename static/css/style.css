@@ -171,7 +171,104 @@ form input#rsID {
   color:black;
   text-align: center;
 }
- 
+
+form input#chromosome {
+  height: 20px;
+  width: 200px;
+  background-color: #fafafa;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #cccccc;
+  padding: 5px;
+  font-size: 15px;
+  margin: 5px;
+  font-family: Helvetica;
+  color:black;
+  text-align: center;
+}
+
+form input#position {
+  height: 20px;
+  width: 200px;
+  background-color: #fafafa;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #cccccc;
+  padding: 5px;
+  font-size: 15px;
+  margin: 5px;
+  font-family: Helvetica;
+  color:black;
+  text-align: center;
+}
+
+form input#allele1 {
+  height: 20px;
+  width: 200px;
+  background-color: #fafafa;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #cccccc;
+  padding: 5px;
+  font-size: 15px;
+  margin: 5px;
+  font-family: Helvetica;
+  color:black;
+  text-align: center;
+}
+
+form input#allele2 {
+  height: 20px;
+  width: 200px;
+  background-color: #fafafa;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #cccccc;
+  padding: 5px;
+  font-size: 15px;
+  margin: 5px;
+  font-family: Helvetica;
+  color:black;
+  text-align: center;
+}
+
+form input#rsIDs {
+  height: 20px;
+  width: 200px;
+  background-color: #fafafa;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #cccccc;
+  padding: 5px;
+  font-size: 15px;
+  margin: 5px;
+  font-family: Helvetica;
+  color:black;
+  text-align: center;
+}
+
+form input#num_used {
+  height: 20px;
+  width: 200px;
+  background-color: #fafafa;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #cccccc;
+  padding: 5px;
+  font-size: 15px;
+  margin: 5px;
+  font-family: Helvetica;
+  color:black;
+  text-align: center;
+}
+
+
 
 .center {
     display: block;
@@ -216,6 +313,21 @@ form input#rsID {
     text-align: center;
     font-family: Helvetica;
     }
+  
+    .grid {
+      height: 20px;
+      width: 100px;
+      background-color: #fafafa;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      border-radius: 3px;
+      border: 1px solid #cccccc;
+      padding: 5px;
+      font-size: 15px;
+      margin: 5px;
+      text-align: center;
+      font-family: Helvetica;
+      }
 
 .downloadbutton {
   height: 33px;
@@ -298,4 +410,14 @@ form input#rsID {
       display: table;
       margin: auto;
     }
+  
+  .tr, td {
+    font-family: Helvetica;
+    color: black;
+    font-size: 20px;
+    font-weight: 500;
+    padding: 0px 0;
+    margin-top: 20px;
+    letter-spacing: -0.5px;
+  }
   

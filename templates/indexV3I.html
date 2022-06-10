@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+  <div class="container">
+    <h1>
+      <center>Variant Effect Prediction Platform</center>
+    </h1>
+    <!-- <h3>
+      <center>Corces Lab</center>
+    </h3> -->
+
+
+    {% for message in form.rsIDs.errors %}
+    <div class="flash">{{ message }}</div>
+    {% endfor %}
+
+
+    <form method=post>
+  
+        {{ form.rsIDs.label }}
+        {{ form.rsIDs }}
+
+      <br>
+      <!-- {{ form.submit }} -->
+      <input class="downloadbutton" type="submit" value="  Submit" onclick="$('#loading').show();">
+    </form>
+    <div id="loading" style="display:none;"><img src="static/gif/loading.gif" alt=""/></div>
+
+  </div>
+
+{% endblock %}
