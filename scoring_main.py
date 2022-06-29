@@ -1,20 +1,10 @@
-from types import ModuleType
-from flask import Flask, request
-from flask import render_template
-from PIL import Image
-import base64
-import io
-from markupsafe import Markup
-import shutil
-
-from numpy.core.fromnumeric import var
-from tensorflow.python.training.server_lib import ClusterSpec
+import pandas as pd
+import tensorflow as tf
 
 from utils.utils import generate_explain_score_rankings
+from utils.load_model import load_chrombpnet
+from scoring.scoringV2 import gen_MPRA_preds
 
-import tensorflow as tf
-import pandas as pd
-from tensorflow import compat
 
 def load_variants():
     vars_df = pd.read_csv('data/ADVariants_Ryan.csv')
@@ -67,16 +57,32 @@ def run_cluster(cluster):
     # generate_explain_score('C' + cluster, rsIDs, nc)
     return scores_df
 
-if __name__ == '__main__':
-    clusters = ['2', '5', '8', '13', '19', '24']
-    results = run_cluster('1')
-    # print("RESULTS AT CLUSTER", '1', results)
+def run_MPRAseqs():
+    seqA_df = pd.read_csv('data/MPRA/seqAN.csv')
+    seqB_df = pd.read_csv('data/MPRA/seqBN.csv')
+    seqA = seqA_df['seqA']
+    seqB = seqB_df['seqB']
+    metadata = seqA_df['metadata']
+    clusters = ['C2', 'C5', 'C8', 'C13', 'C19', 'C24']
+    results_df = gen_MPRA_preds('C1', seqA, seqB, metadata)
     for cluster in clusters:
-        results = results.append(run_cluster(cluster), ignore_index=True)
-        # print("RESULTS AT CLUSTER", cluster, results)
-    results = results.sort_values(by=['jsd'], ascending=[False])
-    # results = results.drop_duplicates(subset=['SNP_rsID'])
-    results = results.reset_index(drop=True)
-    print('\n\nFINAL RESULTS\n\n', results)
-    results.to_csv('data/output/scored_ADVariants_ISEF.csv')
+        results_df = results_df.append(gen_MPRA_preds(cluster, seqA, seqB, metadata), ignore_index=True)
+    results_df.to_csv('MPRA_all_lfc_seqN.csv')
+
+if __name__ == '__main__':
+    run_MPRAseqs()
+
+# For GWAS Variant Prioritization
+# if __name__ == '__main__':
+#     clusters = ['2', '5', '8', '13', '19', '24']
+#     results = run_cluster('1')
+#     # print("RESULTS AT CLUSTER", '1', results)
+#     for cluster in clusters:
+#         results = results.append(run_cluster(cluster), ignore_index=True)
+#         # print("RESULTS AT CLUSTER", cluster, results)
+#     results = results.sort_values(by=['jsd'], ascending=[False])
+#     # results = results.drop_duplicates(subset=['SNP_rsID'])
+#     results = results.reset_index(drop=True)
+#     print('\n\nFINAL RESULTS\n\n', results)
+#     results.to_csv('data/output/scored_ADVariants_ISEF.csv')
     

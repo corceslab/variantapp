@@ -19,7 +19,7 @@ def load_chrombpnet(cell_type):
     """
 
     cluster = cell_type.split()[0]
-    avail_models = ['C1', 'C2', 'C5', 'C8', 'C13', 'C19', 'C24']
+    avail_models = ['C1', 'C2', 'C5', 'C8', 'C13', 'C19', 'C24', 'K562']
     if(cluster not in avail_models):
         cluster = 'C24'
     print("model:", cluster)

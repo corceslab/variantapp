@@ -33,7 +33,7 @@ def get_motif(input_chrom, input_loc):
     # find the image filepath
     motifs['image'] = motifs['best_model'] + '.png'
     # limit motifs to only the most relevant TFs
-    motifs = motifs[motifs['match_score'] > 8]
+    # motifs = motifs[motifs['match_score'] > 8]
     motifs_main = motifs_main.append(motifs)
 
     # construct the html string to display to the user

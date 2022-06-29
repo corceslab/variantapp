@@ -4,6 +4,7 @@ import tensorflow as tf
 import pysam
 import math
 import shap
+import time
 
 from mseqgen.sequtils import one_hot_encode
 import scipy
@@ -35,9 +36,8 @@ def get_preds(model, seqs):
     return counts_profile, pred_logits, pred_logcts
 
 #sum predicted counts within 200bp of the SNP, take log(ratio) of alt/ref
-def sc_lfc(ref_track, alt_track, cutoff):
+def sc_lfc(ref_track, alt_track, cutoff, diff = 100):
     #print("ref_track: ", ref_track)
-    diff = 100
     ref_track = ref_track[len(ref_track) // 2 - diff : len(ref_track) // 2 + diff + 1]
     alt_track = alt_track[len(alt_track) // 2 - diff : len(alt_track) // 2 + diff + 1]
     ref = sum(ref_track)
@@ -104,4 +104,55 @@ def gen_importance(cell_type, peaks_df, variant_names):
     output['max_alleles'] = max_alleles
     output['jsd'] = jsd
 
+    return output
+
+def gen_MPRA_preds(cell_type, seqA, seqB, metadata):
+
+    tf.compat.v1.disable_eager_execution()
+    model, model_bias = load_chrombpnet(cell_type)
+
+    dist_seqs = []
+    peak_loc = 1057
+
+    numseq = len(seqA)
+    XA = one_hot_encode(seqA, 2114)
+    XB = one_hot_encode(seqB, 2114)
+
+    print("Done one-hot-encoding")
+    print("Local time:", time.ctime(time.time()))
+    predsA, pred_logitsA, pred_logctsA = get_preds(model, XA)
+    print("Done predsA", "Local time:", time.ctime(time.time()))
+    predsB, pred_logitsB, pred_logctsB = get_preds(model, XB)
+    print("Done predsB", "Local time:", time.ctime(time.time()))
+
+    #get lfc score
+    lfc = []
+    abs_lfc = []
+    jsd = []
+    A_scores = []
+    B_scores = []
+    max_alleles = []
+    profiles_A = softmax(pred_logitsA)
+    profiles_B = softmax(pred_logitsB)
+    # print(profiles.shape)
+    # print("jsd:", jensenshannon(profiles[0], profiles[1]))
+    for i in range(numseq):
+        lfc_score, A_score, B_score = sc_lfc(predsA[i], predsB[i], 0, 135)
+        lfc.append(lfc_score)
+        abs_lfc.append(abs(lfc_score))
+        jsd.append(jensenshannon(profiles_A[i], profiles_B[i]))
+        A_scores.append(A_score)
+        B_scores.append(B_score)
+        max_alleles.append(max(A_score, B_score))
+    # print("jsd: ", jsd)
+
+    output = pd.DataFrame()
+    output['lfc'] = lfc
+    output['abs_lfc'] = abs_lfc
+    output['A_scores'] = A_scores
+    output['B_scores'] = B_scores
+    output['max_alleles'] = max_alleles
+    output['jsd'] = jsd
+    output['metadata'] = metadata
+    output['NN_cluster'] = cell_type
     return output
