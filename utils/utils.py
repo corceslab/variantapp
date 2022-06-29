@@ -41,7 +41,7 @@ def generate_output_values_chrombpnet(cell_type, peaks_df):
         # merge the prediction and shap score outputs and save
         variantgraph = merge_graphs(altrefpred, lfcpred, altshap, refshap, delshap)
         images.append(variantgraph)
-        # variantgraph.save('output_pdfs_ranking/' + rsID + '.pdf')
+        variantgraph.save('output_pdfs/customvalues.pdf')
     
     # query relevant motifs, getting one data table per variant
     motiftables = []
@@ -94,7 +94,7 @@ def generate_output_rsID_chrombpnet(cell_type, rsID):
         # merge the prediction and shap score outputs and save
         variantgraph = merge_graphs(altrefpred, lfcpred, altshap, refshap, delshap)
         images.append(variantgraph)
-        variantgraph.save('output_pdfs_ranking/' + rsID + '.pdf')
+        variantgraph.save('output_pdfs/' + rsID + '.pdf')
     
     # query relevant motifs, getting one data table per variant
     motiftables = []
@@ -183,7 +183,7 @@ def generate_output_compound(cell_type, chrom, center, positions, alleleA, allel
     # merge the prediction and shap score outputs and save
     variantgraph = merge_graphs(altrefpred, lfcpred, altshap, refshap, delshap)
     images.append(variantgraph)
-    variantgraph.save('output_pdfs_ranking/customcompound.pdf')
+    variantgraph.save('output_pdfs/customcompound.pdf')
     
     # query relevant motifs, getting one data table per variant
     motiftables = []
