@@ -147,3 +147,33 @@ def predict_main(model_chrombpnet, X, sequences):
     predgraph = graph_preds(altpred[st:en], refpred[st:en], 'Model Predictions', sequences[0][1056], sequences[1][1056], minval, maxval)
     lfcgraph = graph_lfc(lfc[st:en], 'Log Fold Change Graph (ref/alt)', lfcmin, lfcmax)
     return predgraph, lfcgraph
+
+def predict_mpra_chrombpnet(model, seqs):
+    """ Generates predicted logits, logcts, and profile for all sequences
+        using the specified ChromBPNet model
+        
+        @Joel - the raw values for the predicted profile is given in counts_profile,
+        and the raw values for the profile (pred_logits) and log of the counts (pred_logits)
+        are returned from this method to predict_main
+    """
+    pred_logits, pred_logcts = model.predict([seqs],
+                                             batch_size=256, verbose=True)
+    counts_profile = softmax(pred_logits) * (np.exp(pred_logcts) - 1)
+    return counts_profile, pred_logits, pred_logcts
+
+def predict_main_mpra_chrombpnet(model_chrombpnet, X, sequences):
+    """ The main prediction method
+    """
+    # Prediction generation
+    profiles, logits, logcts = predict_mpra_chrombpnet(model_chrombpnet, X)
+    # @Joel - maybe save the logits + logcts from here
+
+    altpred = profiles[0]
+    refpred = profiles[1]
+    lfc, lfcmin, lfcmax = log_fold_change(altpred, refpred)
+    
+    st, en = 0, 1000
+    minval, maxval = get_range(altpred, refpred, st, en)
+    predgraph = graph_preds(altpred[st:en], refpred[st:en], 'Model Predictions', sequences[0][1056], sequences[1][1056], minval, maxval)
+    lfcgraph = graph_lfc(lfc[st:en], 'Log Fold Change Graph (ref/alt)', lfcmin, lfcmax)
+    return predgraph, lfcgraph

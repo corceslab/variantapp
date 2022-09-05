@@ -4,8 +4,8 @@ from markupsafe import Markup
 from werkzeug.datastructures import MultiDict
 
 
-from utils.form import form_compound, form_rsID, form_values, form_info
-from utils.utils import generate_output_rsID_chrombpnet, generate_output_values_chrombpnet, generate_output_compound
+from utils.form import form_compound, form_rsID, form_values, form_info, form_chrombpnet
+from utils.utils import generate_output_rsID_chrombpnet, generate_output_values_chrombpnet, generate_output_compound, generate_output_values_mpra_chrombpnet
 from utils.query_variant import gen_var_df, query_rsID
 
 import tensorflow as tf
@@ -119,6 +119,31 @@ def variantInfo():
         s = html_string.format(table=peaks_df.to_html(classes='mystyle', escape=False, index=False))
         return render_template('outputInfo.html', table=Markup(s))
     return render_template('indexV3I.html', form=form)
+
+@app.route("/chrombpnet", methods=['GET', 'POST'])
+def chrombpnet():
+    form = form_chrombpnet(request.form)
+
+    if request.method == 'POST' and form.validate():
+        cell_type = request.form['cell_type']
+        chrom = request.form['chromosome']
+        pos = int(request.form['position'])
+        alt_allele = request.form['allele1']
+        ref_allele = request.form['allele2']
+
+        peaks_df = gen_var_df(chrom, pos, alt_allele, ref_allele)
+        graphs, tables = generate_output_values_mpra_chrombpnet(cell_type, peaks_df)
+
+        motifs = []
+
+        #preprocess results before outputting to user
+        for i in range(len(graphs)):
+            graphs[i] = graphs[i].decode('utf-8')
+        for table in tables:
+            motifs.append(Markup(table))
+        
+        return render_template('outputV3.html', zip=zip(graphs,motifs))
+    return render_template('indexV3V.html', form=form)
 
 if __name__ == '__main__':
     app.run()

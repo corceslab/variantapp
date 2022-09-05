@@ -57,3 +57,15 @@ class form_compound(Form):
 #         ('C12 - Striatal Inhibitory (minor)'), ('C13 - Astrocytes (unclassified)'), ('C14 - Nigral Astrocytes'), ('C15 - Isocortical Astrocytes'), ('C16 - Striatal Astrocytes'), \
 #         ('C17 - Astrocytes (unclassified)'), ('C18 - Potential Doublets'), ('C19 - Oligodendrocytes'), ('C20 - Oligodendrocytes'), ('C21 - Oligodendrocytes'), ('C22 - Oligodendrocytes'), \
 #         ('C23 - Oligodendrocytes'), ('C24 - Microglia')
+
+class form_chrombpnet(Form):
+    """ User entry form for entering cell type, chromosome, start, end, allele1, allele2
+    """
+    cell_type = SelectField(u'Cell Type', choices=[('GM12878')])
+    chromosome = TextField("Chromosome (chr#):", validators=[validators.InputRequired()])
+    position = IntegerField("SNP position (0-based):", validators=[validators.InputRequired()])
+    allele1 = TextField("Alternate Allele:", validators=[validators.InputRequired(), 
+        validators.AnyOf(values=["A", "C", "G", "T"], message="alternate allele must be A, C, G, or T")])
+    allele2 = TextField("Reference Allele:", validators=[validators.InputRequired(), 
+        validators.AnyOf(values=["A", "C", "G", "T"], message="reference allele must be A, C, G, or T")])
+    submit = SubmitField("Submit")

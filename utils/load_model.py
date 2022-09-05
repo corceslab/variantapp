@@ -29,3 +29,9 @@ def load_chrombpnet(cell_type):
     print(model_chrombpnet.summary())
     print(model_bias.summary())
     return model_chrombpnet, model_bias
+
+def load_mpra_chrombpnet(cell_type):
+    with CustomObjectScope({'multinomial_nll':multinomial_nll, 'tf':tf}):
+        model_chrombpnet = load_model('models/GM12878ChromBPNet/model.h5')
+    print(model_chrombpnet.summary())
+    return model_chrombpnet

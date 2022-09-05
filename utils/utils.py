@@ -10,10 +10,10 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
-from utils.load_model import load, load_chrombpnet
+from utils.load_model import load, load_chrombpnet, load_mpra_chrombpnet
 from utils.load_seqs import load_sequences, load_compound
 from utils.query_variant import query_rsID, query_values, query_values_scoring
-from utils.gen_prediction import predict_main
+from utils.gen_prediction import predict_main, predict_main_mpra_chrombpnet
 from utils.gen_shap import shap_scores_main
 from utils.query_motif import get_motif
 from scoring.scoringV2 import gen_importance
@@ -200,6 +200,44 @@ def generate_output_compound(cell_type, chrom, center, positions, alleleA, allel
         export_image = Image.new('RGB', (width, height), (255, 255, 255))
         I1 = ImageDraw.Draw(export_image)
         roboto = ImageFont.truetype('static/ttf/Roboto-BoldItalic.ttf', 50)
+        export_image.paste(images[i], (-40, 130))
+        export_image.save(encoded, format="PNG")
+        export_images.append(base64.b64encode(encoded.getvalue()))
+
+    return export_images, motiftables
+
+def generate_output_values_mpra_chrombpnet(cell_type, peaks_df):
+    images = []
+
+    # iterates through all variants (2 rows of the peaks_df dataframe at a time)
+    # generates all predictions and importances scores, which are saved to the images list
+    for i, g in peaks_df.groupby(peaks_df.index // 2):
+        model_chrombpnet = load_mpra_chrombpnet(cell_type)
+        
+        # load the sequences and one-hot-encode from the peaks_df pandas dataframe
+        X, sequences = load_sequences(g)
+
+        # generate predictions and importance scores
+        altrefpred, lfcpred = predict_main_mpra_chrombpnet(model_chrombpnet, X, sequences)
+        altshap, refshap, delshap = shap_scores_main(cell_type, X, sequences)
+        
+        # merge the prediction and shap score outputs and save
+        variantgraph = merge_graphs(altrefpred, lfcpred, altshap, refshap, delshap)
+        images.append(variantgraph)
+        variantgraph.save('output_pdfs/customvalues.pdf')
+    
+    # postprocessing images and adding a title with the rsID information
+    export_images = []
+    for i in range(len(images)):
+        encoded = io.BytesIO()
+        # print("i:", i, "rsIDs[i]:", rsIDs[i])
+        width = images[i].width
+        height = images[i].height + 100
+        export_image = Image.new('RGB', (width, height), (255, 255, 255))
+        I1 = ImageDraw.Draw(export_image)
+        roboto = ImageFont.truetype('static/ttf/Roboto-BoldItalic.ttf', 50)
+        # w, h = I1.textsize(rsIDs[i], font=roboto)
+        # I1.text(((width-w)/2, 50), rsIDs[i], font=roboto, fill =(0, 0, 0))
         export_image.paste(images[i], (-40, 130))
         export_image.save(encoded, format="PNG")
         export_images.append(base64.b64encode(encoded.getvalue()))

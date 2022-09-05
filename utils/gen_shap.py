@@ -8,7 +8,7 @@ from modisco.visualization import viz_sequence
 from basepairmodels.cli.bpnetutils import *
 from basepairmodels.cli.shaputils import *
 
-from utils.load_model import load_chrombpnet
+from utils.load_model import load_chrombpnet, load_mpra_chrombpnet
 
 
 def shap_scores(model, X):
@@ -94,4 +94,32 @@ def shap_scores_main(cell_type, X, sequences):
 
     # Generate imporatnce scores
     scores = shap_scores(model, X)
+    return gen_graphs(X, scores, sequences)
+
+def shap_scores_mpra_chrombpnet(model, X):
+    """ Uses DeepSHAP to calculate importance scores for both alleles
+    """
+    counts_model_input = [model.input[0]]
+    counts_input = [X]
+    
+    profile_model_counts_explainer = shap.explainers.deep.TFDeepExplainer(
+            (counts_model_input, tf.reduce_sum(model.outputs[1], axis=-1)),
+            shuffle_several_times,
+            combine_mult_and_diffref=combine_mult_and_diffref)
+
+    counts_shap_scores = profile_model_counts_explainer.shap_values(
+            counts_input, progress_message=10)
+    
+    return counts_shap_scores[0]
+
+def shap_scores_main_mpra_chrombpnet(cell_type, X, sequences):
+    """ The main method to generate DeepSHAP importance scores
+    """
+
+    # Config environment and load models
+    tf.compat.v1.disable_v2_behavior()
+    model = load_mpra_chrombpnet(cell_type)
+
+    # Generate imporatnce scores
+    scores = shap_scores_mpra_chrombpnet(model, X)
     return gen_graphs(X, scores, sequences)
