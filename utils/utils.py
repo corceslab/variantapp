@@ -14,7 +14,7 @@ from utils.load_model import load, load_chrombpnet, load_mpra_chrombpnet
 from utils.load_seqs import load_sequences, load_compound
 from utils.query_variant import query_rsID, query_values, query_values_scoring
 from utils.gen_prediction import predict_main, predict_main_mpra_chrombpnet
-from utils.gen_shap import shap_scores_main
+from utils.gen_shap import shap_scores_main, shap_scores_main_mpra_chrombpnet
 from utils.query_motif import get_motif
 from scoring.scoringV2 import gen_importance
 
@@ -206,7 +206,7 @@ def generate_output_compound(cell_type, chrom, center, positions, alleleA, allel
 
     return export_images, motiftables
 
-def generate_output_values_mpra_chrombpnet(cell_type, peaks_df):
+def generate_output_values_mpra_chrombpnet(cell_type, peaks_df, chrom, pos, alt_allele, ref_allele):
     images = []
 
     # iterates through all variants (2 rows of the peaks_df dataframe at a time)
@@ -219,13 +219,19 @@ def generate_output_values_mpra_chrombpnet(cell_type, peaks_df):
 
         # generate predictions and importance scores
         altrefpred, lfcpred = predict_main_mpra_chrombpnet(model_chrombpnet, X, sequences)
-        altshap, refshap, delshap = shap_scores_main(cell_type, X, sequences)
+        altshap, refshap, delshap = shap_scores_main_mpra_chrombpnet(cell_type, X, sequences)
         
         # merge the prediction and shap score outputs and save
         variantgraph = merge_graphs(altrefpred, lfcpred, altshap, refshap, delshap)
         images.append(variantgraph)
-        variantgraph.save('output_pdfs/customvalues.pdf')
+        variantgraph.save('MPRAModelPDFs/'+chrom+str(pos)+alt_allele+ref_allele+'.pdf')
     
+    motiftables = []
+    for i, g in peaks_df.groupby(peaks_df.index // 2):
+        input_chrom = str(g.iloc[0]['chrom'])
+        input_loc = str(g.iloc[0]['st'])
+        motiftables.append(get_motif(input_chrom, input_loc))
+
     # postprocessing images and adding a title with the rsID information
     export_images = []
     for i in range(len(images)):

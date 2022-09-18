@@ -132,7 +132,7 @@ def chrombpnet():
         ref_allele = request.form['allele2']
 
         peaks_df = gen_var_df(chrom, pos, alt_allele, ref_allele)
-        graphs, tables = generate_output_values_mpra_chrombpnet(cell_type, peaks_df)
+        graphs, tables = generate_output_values_mpra_chrombpnet(cell_type, peaks_df, chrom, pos, alt_allele, ref_allele)
 
         motifs = []
 
@@ -144,6 +144,10 @@ def chrombpnet():
         
         return render_template('outputV3.html', zip=zip(graphs,motifs))
     return render_template('indexV3V.html', form=form)
+
+# @app.route("/gen_PDF", methods=['GET', 'POST'])
+# def gen_PDF():
+
 
 if __name__ == '__main__':
     app.run()

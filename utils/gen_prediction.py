@@ -158,6 +158,8 @@ def predict_mpra_chrombpnet(model, seqs):
     """
     pred_logits, pred_logcts = model.predict([seqs],
                                              batch_size=256, verbose=True)
+    print("pred_logits", pred_logits)
+    print("pred_logcts", pred_logcts)
     counts_profile = softmax(pred_logits) * (np.exp(pred_logcts) - 1)
     return counts_profile, pred_logits, pred_logcts
 
