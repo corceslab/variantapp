@@ -78,7 +78,7 @@ def graph_lfc(pred, title, minval, maxval):
     currentAxis = plt.gca()
 
     # blue highlight at variant location
-    currentAxis.add_patch(Rectangle((199 - .5, minval), 1, maxval-minval, facecolor="lightsteelblue", alpha=0.5))
+    currentAxis.add_patch(Rectangle((499 - .5, minval), 1, maxval-minval, facecolor="lightsteelblue", alpha=0.5))
     return fig_to_img(plt.gcf())
     #plt.savefig(filepath)
 
@@ -110,7 +110,7 @@ def graph_preds(pred1, pred2, title, altlegend, reflegend, minval, maxval):
     currentAxis = plt.gca()
 
     # blue highlight at variant location
-    currentAxis.add_patch(Rectangle((199 - .5, minval), 1, maxval-minval, facecolor="lightsteelblue", alpha=0.5))
+    currentAxis.add_patch(Rectangle((499 - .5, minval), 1, maxval-minval, facecolor="lightsteelblue", alpha=0.5))
     return fig_to_img(plt.gcf())
     #plt.savefig(filepath)
 

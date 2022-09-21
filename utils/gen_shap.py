@@ -3,11 +3,13 @@ import pandas as pd
 import pysam
 import shap
 import tensorflow as tf
+import sys
 
 from modisco.visualization import viz_sequence
 from basepairmodels.cli.bpnetutils import *
 from basepairmodels.cli.shaputils import *
 
+sys.path.append('utils')
 import shap_utils as shap_utils #utils.
 from load_model import load_chrombpnet, load_mpra_chrombpnet #utils.
 
@@ -68,7 +70,7 @@ def gen_graphs(X, hyp_shap_scores, sequences):
         or just the postprocessed alt_scores and ref_scores
     """
     center = 1056
-    diff = 250 # CHANGED DIFF (was 40)
+    diff = 150 # CHANGED DIFF (was 40)
     start, end = center - diff, center + diff + 1
 
     alt_scores = get_imp(hyp_shap_scores[0], X[0], start, end)
