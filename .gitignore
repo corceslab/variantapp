@@ -14,3 +14,4 @@ templates/index.html
 templates/index_home.html
 templates/login.html
 ChromBPNet-MPRA/*
+motifs/*

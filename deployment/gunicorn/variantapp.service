@@ -2,10 +2,10 @@
 Description=Gunicorn instance for variantapp
 After=network.target
 [Service]
-User=ubuntu
+User=allan
 Group=www-data
-WorkingDirectory=/home/ubuntu/variantapp
-ExecStart=/home/ubuntu/.local/bin/gunicorn -b localhost:8000 -w 10 -t 600 main:app
+WorkingDirectory=/home/allan/variantapp
+ExecStart=/home/allan/miniconda3/envs/variantapp/bin/gunicorn -b localhost:8000 -w 10 -t 600 -- mainGIDB:app
 Restart=always
 [Install]
 WantedBy=multi-user.target

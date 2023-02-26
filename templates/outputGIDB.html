@@ -1,0 +1,14 @@
+{% extends 'baseGIDB.html' %}
+{% block content %}
+
+    <br>
+    <h1><center>Model Output</center></h1>
+    <embed src = {{predictions}} class="center"/>
+    <embed src = {{preddelta}} class="center"/>
+    <embed src = {{shapalt}} class="center"/>
+    <embed src = {{shapref}} class="center"/>
+    <embed src = {{shapdelta}} class="center"/>
+    
+    {{ table }}
+
+{% endblock %}

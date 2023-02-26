@@ -1,0 +1,2 @@
+/home/allan/variantapp/miniconda3
+/home/allan/variantapp/miniconda3/envs/variantapp

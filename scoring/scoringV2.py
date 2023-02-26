@@ -6,12 +6,12 @@ import math
 import shap
 import time
 
-from mseqgen.sequtils import one_hot_encode
+from utils.sequtils import one_hot_encode
 import scipy
 
 from utils.load_model import load_chrombpnet
-from basepairmodels.cli.bpnetutils import *
-from basepairmodels.cli.shaputils import *
+from utils.bpnetutils import *
+from utils.shaputils import *
 from scipy.spatial.distance import jensenshannon
 
 def softmax(x, temp=1):

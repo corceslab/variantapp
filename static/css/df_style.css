@@ -3,16 +3,19 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
-    font-size: 10pt; 
+    font-size: 8pt; 
     font-family: "Helvetica Neue";
     border-collapse: collapse; 
     border: 1px solid silver;
-    max-width: fit-content;
     white-space: nowrap;
+    max-width: fit-content
 }
 
 .mystyle td, th {
-    max-width: fit-content;
+    font-size: 8pt; 
+    font-family: "Helvetica Neue";
+    margin-left: auto;
+    margin-right: auto;
     white-space: nowrap;
     padding: 5px;
 }

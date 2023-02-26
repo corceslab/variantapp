@@ -6,12 +6,12 @@ import tensorflow as tf
 import sys
 
 from modisco.visualization import viz_sequence
-from basepairmodels.cli.bpnetutils import *
-from basepairmodels.cli.shaputils import *
+from utils.bpnetutils import *
+from utils.shaputils import *
 
 sys.path.append('utils')
-import shap_utils as shap_utils #utils.
-from load_model import load_chrombpnet, load_mpra_chrombpnet #utils.
+import shap_utils as shap_utils
+from load_model import load_cbp
 
 
 def shap_scores(model, X):
@@ -30,74 +30,19 @@ def shap_scores(model, X):
     
     return counts_shap_scores[0]
 
-def get_imp(scores, seqs, start, end):
-    """ Combines importance scores with the one-hot-encoded sequence to find the
-        shap scores for the active bases
-    """
-    scores = np.asarray(scores)
-    seqs = np.asarray(seqs)
-    vals = np.multiply(scores, seqs)
-    return vals[start:end]
 
-def get_range_chrombpnet(shap1, shap2):
-    """ Calculates the y range for the importance score graphs for the individual alleles
-        with a buffer of 20% from the min and max values
-    """
-    minval = min(np.amin(shap1), np.amin(shap2))
-    maxval = max(np.amax(shap1), np.amax(shap2))
-    buffer = 0.2 * (maxval-minval)
-    minval-=buffer
-    maxval+=buffer
-    return minval, maxval
 
-def get_minmax_chrombpnet(shap1):
-    """ Gets the y range for the delta score graph that uses an independent scale
-        with a buffer of 20% from the min and max values
-    """
-    minval = np.amin(shap1)
-    maxval = np.amax(shap1)
-    buffer = 0.2 * (maxval-minval)
-    minval-=buffer
-    maxval+=buffer
-    return minval, maxval
-
-def gen_graphs(X, hyp_shap_scores, sequences):
-    """ Graphs the importance scores for both alleles and the delta values
-        Calculates the relevant scores to display using the get_imp method
-        Returns the three graphs in binary form
-
-        @Joel - you could store either the hyp_shap_scores and the sequence
-        or just the postprocessed alt_scores and ref_scores
-    """
-    center = 1056
-    diff = 150 # CHANGED DIFF (was 40)
-    start, end = center - diff, center + diff + 1
-
-    alt_scores = get_imp(hyp_shap_scores[0], X[0], start, end)
-    ref_scores = get_imp(hyp_shap_scores[1], X[1], start, end)
-    delta_scores = alt_scores-ref_scores
-
-    minval, maxval = get_range_chrombpnet(alt_scores, ref_scores)
-    mindelta, maxdelta = get_minmax_chrombpnet(delta_scores)
-    title1 = "Alternate Importance Scores [allele: " + sequences[0][1056] + "]"
-    title2 = "Reference Importance Scores [allele: " + sequences[1][1056] + "]"
-    title3 = "Delta (alt-ref)"
-    altshap = viz_sequence.plot_weights(array=alt_scores, title=title1, filepath='static/images/app/altimp.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
-    refshap = viz_sequence.plot_weights(array=ref_scores, title=title2, filepath='static/images/app/refimp.png', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
-    delshap = viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/images/app/delta.png', minval=mindelta, maxval=maxdelta, color="lightsteelblue", figsize=(30, 4))
-    return altshap, refshap, delshap
-
-def shap_scores_main(cell_type, X, sequences):
+def shap_scores_main(cell_type, X, sequences, outputID):
     """ The main method to generate DeepSHAP importance scores
     """
 
     # Config environment and load models
     tf.compat.v1.disable_v2_behavior()
-    model, biasmodel = load_chrombpnet(cell_type)
+    model = load_cbp(cell_type)
 
     # Generate imporatnce scores
     scores = shap_scores(model, X)
-    return gen_graphs(X, scores, sequences)
+    gen_graphs(X, scores, sequences, outputID)
 
 def shap_scores_mpra_chrombpnet(model, X):
     """ Uses DeepSHAP to calculate importance scores for both alleles
@@ -126,3 +71,62 @@ def shap_scores_main_mpra_chrombpnet(cell_type, X, sequences):
     # Generate imporatnce scores
     scores = shap_scores_mpra_chrombpnet(model, X)
     return gen_graphs(X, scores, sequences)
+
+
+
+def gen_graphs(X, hyp_shap_scores, sequences, outputID):
+    """ Graphs the importance scores for both alleles and the delta values
+        Calculates the relevant scores to display using the get_imp method
+        Returns the three graphs in binary form
+
+        @Joel - you could store either the hyp_shap_scores and the sequence
+        or just the postprocessed alt_scores and ref_scores
+    """
+    center = 1056
+    diff = 50 # CHANGED DIFF (was 40)
+    start, end = center - diff, center + diff + 1
+
+    alt_scores = get_imp(hyp_shap_scores[0], X[0], start, end)
+    ref_scores = get_imp(hyp_shap_scores[1], X[1], start, end)
+    delta_scores = alt_scores-ref_scores
+
+    minval, maxval = get_range(alt_scores, ref_scores)
+    mindelta, maxdelta = get_minmax(delta_scores)
+    title1 = "Alternate Importance Scores [allele: " + sequences[0][1056] + "]"
+    title2 = "Reference Importance Scores [allele: " + sequences[1][1056] + "]"
+    title3 = "Delta (alt-ref)"
+    altshap = viz_sequence.plot_weights(array=alt_scores, title=title1, filepath='static/GIDBcache/shapalt/' + outputID + '.svg', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
+    refshap = viz_sequence.plot_weights(array=ref_scores, title=title2, filepath='static/GIDBcache/shapref/' + outputID + '.svg', minval=minval, maxval=maxval, color="lightsteelblue", figsize=(30, 4))
+    delshap = viz_sequence.plot_weights(array=delta_scores, title=title3, filepath='static/GIDBcache/shapdelta/' + outputID + '.svg', minval=mindelta, maxval=maxdelta, color="lightsteelblue", figsize=(30, 4))
+    # return altshap, refshap, delshap
+
+def get_imp(scores, seqs, start, end):
+    """ Combines importance scores with the one-hot-encoded sequence to find the
+        shap scores for the active bases
+    """
+    scores = np.asarray(scores)
+    seqs = np.asarray(seqs)
+    vals = np.multiply(scores, seqs)
+    return vals[start:end]
+
+def get_range(shap1, shap2):
+    """ Calculates the y range for the importance score graphs for the individual alleles
+        with a buffer of 20% from the min and max values
+    """
+    minval = min(np.amin(shap1), np.amin(shap2))
+    maxval = max(np.amax(shap1), np.amax(shap2))
+    buffer = 0.2 * (maxval-minval)
+    minval-=buffer
+    maxval+=buffer
+    return minval, maxval
+
+def get_minmax(shap1):
+    """ Gets the y range for the delta score graph that uses an independent scale
+        with a buffer of 20% from the min and max values
+    """
+    minval = np.amin(shap1)
+    maxval = np.amax(shap1)
+    buffer = 0.2 * (maxval-minval)
+    minval-=buffer
+    maxval+=buffer
+    return minval, maxval
